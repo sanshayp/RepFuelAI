@@ -1,0 +1,224 @@
+/* RepFuelAI Squatting Man Preloader Styles */
+
+.preloader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-primary);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s ease;
+  backdrop-filter: blur(20px);
+}
+
+.preloader-overlay.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.preloader-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-8) var(--space-10);
+  border-radius: var(--radius-xl);
+  background: var(--glass-card);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+}
+
+.preloader-svg-wrap {
+  position: relative;
+  width: 180px;
+  height: 210px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-6);
+}
+
+.squat-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Floor Shadow Animation */
+.svg-floor-shadow {
+  transform-origin: 100px 195px;
+  animation: shadowSquat 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes shadowSquat {
+  0%, 100% {
+    transform: scaleX(0.85);
+    opacity: 0.35;
+  }
+  42%, 58% {
+    transform: scaleX(1.35);
+    opacity: 0.85;
+  }
+}
+
+/* Full Upper Body & Dumbbells Translation */
+.svg-upper-body {
+  animation: upperBodySquat 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes upperBodySquat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  42%, 58% {
+    transform: translateY(42px);
+  }
+}
+
+/* Thigh Rotations */
+.svg-thigh-left {
+  transform-origin: 94px 116px;
+  animation: thighLeftSquat 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+.svg-thigh-right {
+  transform-origin: 106px 116px;
+  animation: thighRightSquat 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes thighLeftSquat {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  42%, 58% {
+    transform: rotate(-62deg) translateY(-2px);
+  }
+}
+
+@keyframes thighRightSquat {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  42%, 58% {
+    transform: rotate(62deg) translateY(-2px);
+  }
+}
+
+/* Shin / Knee Rotations */
+.svg-shin-left {
+  transform-origin: 82px 156px;
+  animation: shinLeftSquat 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+.svg-shin-right {
+  transform-origin: 118px 156px;
+  animation: shinRightSquat 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes shinLeftSquat {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  42%, 58% {
+    transform: rotate(56deg) translateX(-18px) translateY(-28px);
+  }
+}
+
+@keyframes shinRightSquat {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  42%, 58% {
+    transform: rotate(-56deg) translateX(18px) translateY(-28px);
+  }
+}
+
+/* Dumbbell weights glow */
+.dumbbell-plate {
+  filter: drop-shadow(0 0 6px var(--accent-glow));
+}
+
+.preloader-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.preloader-brand-name {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.preloader-brand-name span {
+  color: var(--accent-primary);
+}
+
+.preloader-status {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.preloader-rep-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--volt-green-subtle);
+  border: 1px solid var(--volt-green-border);
+  color: var(--volt-green);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: var(--space-4);
+  animation: repCounterPulse 2.2s infinite;
+}
+
+.preloader-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+[data-theme="light"] .preloader-progress-bar {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.preloader-progress-fill {
+  height: 100%;
+  width: 100%;
+  background: var(--accent-gradient);
+  border-radius: var(--radius-full);
+  animation: progressFill 2.2s ease-in-out infinite;
+}
+
+@keyframes progressFill {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}

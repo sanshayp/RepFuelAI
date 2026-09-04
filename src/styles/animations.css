@@ -1,0 +1,152 @@
+/* RepFuelAI Keyframe Animations & Micro-interactions */
+
+/* Preloader Squat Cycle */
+@keyframes squatBody {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(32px);
+  }
+  50% {
+    transform: translateY(36px);
+  }
+  65% {
+    transform: translateY(34px);
+  }
+}
+
+@keyframes squatThighLeft {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  40%, 65% {
+    transform: rotate(-65deg);
+  }
+}
+
+@keyframes squatThighRight {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  40%, 65% {
+    transform: rotate(65deg);
+  }
+}
+
+@keyframes squatShinLeft {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  40%, 65% {
+    transform: rotate(50deg);
+  }
+}
+
+@keyframes squatShinRight {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  40%, 65% {
+    transform: rotate(-50deg);
+  }
+}
+
+@keyframes squatArmLeft {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  40%, 65% {
+    transform: rotate(-25deg);
+  }
+}
+
+@keyframes squatArmRight {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  40%, 65% {
+    transform: rotate(25deg);
+  }
+}
+
+@keyframes floorShadow {
+  0%, 100% {
+    transform: scaleX(1);
+    opacity: 0.4;
+  }
+  40%, 65% {
+    transform: scaleX(1.4);
+    opacity: 0.8;
+  }
+}
+
+@keyframes repCounterPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+    color: var(--accent-primary);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 94, 30, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(255, 94, 30, 0.65);
+  }
+}
+
+@keyframes floatBadge {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes floatBadgeReverse {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    visibility: visible;
+  }
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
