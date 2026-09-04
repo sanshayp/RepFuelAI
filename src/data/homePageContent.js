@@ -11,6 +11,7 @@ export const homePageContent = {
       { label: "Home", href: "#hero" },
       { label: "Training Styles", href: "#categories" },
       { label: "Workouts", href: "#workouts" },
+      { label: "BMI Check", href: "#bmi" },
       { label: "Nutrition", href: "#nutrition" },
       { label: "Why RepFuel", href: "#about" },
     ],
@@ -191,6 +192,12 @@ export const homePageContent = {
         rating: "5.0 (3.2k reviews)"
       }
     ]
+  },
+
+  bmi: {
+    badge: "PERSONAL METRICS",
+    title: "Check your BMI",
+    subtitle: "Get a quick estimate from your height and weight, then use it as one signal in your broader health picture."
   },
 
   nutritionTips: {

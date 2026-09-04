@@ -7,6 +7,7 @@ import { Hero } from './components/Hero/Hero';
 import { AboutIntro } from './components/AboutIntro/AboutIntro';
 import { CategoryGrid } from './components/FitnessCategories/CategoryGrid';
 import { FeaturedWorkouts } from './components/FeaturedWorkouts/FeaturedWorkouts';
+import { BMICalculator } from './components/BMICalculator/BMICalculator';
 import { TipsSection } from './components/NutritionTips/TipsSection';
 import { Footer } from './components/Footer/Footer';
 import './App.css';
@@ -66,6 +67,12 @@ export function App() {
             title={homePageContent.featuredWorkouts.title}
             subtitle={homePageContent.featuredWorkouts.subtitle}
             items={homePageContent.featuredWorkouts.items}
+          />
+
+          <BMICalculator
+            badge={homePageContent.bmi.badge}
+            title={homePageContent.bmi.title}
+            subtitle={homePageContent.bmi.subtitle}
           />
 
           {/* Module 6: Nutrition & Fitness Tips */}
