@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { homePageContent } from './data/homePageContent';
 import { SquatPreloader } from './components/Preloader/SquatPreloader';
@@ -14,6 +15,8 @@ import './App.css';
 
 export function App() {
   const [isPreloaderDone, setIsPreloaderDone] = useState(false);
+  const { pathname } = useLocation();
+  const isBmiPage = pathname === '/bmi';
 
   return (
     <ThemeProvider>
@@ -33,55 +36,54 @@ export function App() {
         />
 
         <main className="main-content">
-          {/* Module 2: Hero Section */}
-          <Hero 
-            badge={homePageContent.hero.badge}
-            headline={homePageContent.hero.headline}
-            subheadline={homePageContent.hero.subheadline}
-            primaryCta={homePageContent.hero.primaryCta}
-            secondaryCta={homePageContent.hero.secondaryCta}
-            stats={homePageContent.hero.stats}
-            heroImage={homePageContent.hero.heroImage}
-          />
+          {isBmiPage ? (
+            <BMICalculator
+              badge={homePageContent.bmi.badge}
+              title={homePageContent.bmi.title}
+              subtitle={homePageContent.bmi.subtitle}
+            />
+          ) : (
+            <>
+              <Hero 
+                badge={homePageContent.hero.badge}
+                headline={homePageContent.hero.headline}
+                subheadline={homePageContent.hero.subheadline}
+                primaryCta={homePageContent.hero.primaryCta}
+                secondaryCta={homePageContent.hero.secondaryCta}
+                stats={homePageContent.hero.stats}
+                heroImage={homePageContent.hero.heroImage}
+              />
 
-          {/* Module 3: Introduction to RepFuelAI */}
-          <AboutIntro 
-            badge={homePageContent.aboutIntro.badge}
-            title={homePageContent.aboutIntro.title}
-            description={homePageContent.aboutIntro.description}
-            pillars={homePageContent.aboutIntro.pillars}
-            metricsPreview={homePageContent.aboutIntro.metricsPreview}
-          />
+              <AboutIntro 
+                badge={homePageContent.aboutIntro.badge}
+                title={homePageContent.aboutIntro.title}
+                description={homePageContent.aboutIntro.description}
+                pillars={homePageContent.aboutIntro.pillars}
+                metricsPreview={homePageContent.aboutIntro.metricsPreview}
+              />
 
-          {/* Module 4: Fitness Categories */}
-          <CategoryGrid 
-            badge={homePageContent.categories.badge}
-            title={homePageContent.categories.title}
-            subtitle={homePageContent.categories.subtitle}
-            items={homePageContent.categories.items}
-          />
+              <CategoryGrid 
+                badge={homePageContent.categories.badge}
+                title={homePageContent.categories.title}
+                subtitle={homePageContent.categories.subtitle}
+                items={homePageContent.categories.items}
+              />
 
-          {/* Module 5: Featured Workouts */}
-          <FeaturedWorkouts 
-            badge={homePageContent.featuredWorkouts.badge}
-            title={homePageContent.featuredWorkouts.title}
-            subtitle={homePageContent.featuredWorkouts.subtitle}
-            items={homePageContent.featuredWorkouts.items}
-          />
+              <FeaturedWorkouts 
+                badge={homePageContent.featuredWorkouts.badge}
+                title={homePageContent.featuredWorkouts.title}
+                subtitle={homePageContent.featuredWorkouts.subtitle}
+                items={homePageContent.featuredWorkouts.items}
+              />
 
-          <BMICalculator
-            badge={homePageContent.bmi.badge}
-            title={homePageContent.bmi.title}
-            subtitle={homePageContent.bmi.subtitle}
-          />
-
-          {/* Module 6: Nutrition & Fitness Tips */}
-          <TipsSection 
-            badge={homePageContent.nutritionTips.badge}
-            title={homePageContent.nutritionTips.title}
-            subtitle={homePageContent.nutritionTips.subtitle}
-            items={homePageContent.nutritionTips.items}
-          />
+              <TipsSection 
+                badge={homePageContent.nutritionTips.badge}
+                title={homePageContent.nutritionTips.title}
+                subtitle={homePageContent.nutritionTips.subtitle}
+                items={homePageContent.nutritionTips.items}
+              />
+            </>
+          )}
         </main>
 
         {/* Module 7: Footer */}
