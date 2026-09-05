@@ -21,3 +21,4 @@ npm-debug.log*
 
 # Local-only project files
 RepFuelAI_HomePage_PRD.md
+node_modules/
