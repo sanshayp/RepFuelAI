@@ -33,8 +33,19 @@ export const Navbar = ({
   };
 
   const isLinkActive = (href) => {
-    if (href === '/') return pathname === '/';
-    if (href.startsWith('/#')) return pathname === '/';
+    if (!href) return false;
+
+    const currentHash = typeof window !== 'undefined' ? window.location.hash : '';
+
+    if (href === '/') {
+      return pathname === '/' && !currentHash;
+    }
+
+    if (href.startsWith('/#')) {
+      const targetHash = href.slice(href.indexOf('#'));
+      return pathname === '/' && currentHash === targetHash;
+    }
+
     return pathname === href;
   };
 
