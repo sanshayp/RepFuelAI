@@ -8,15 +8,15 @@ export const homePageContent = {
     brandName: "RepFuelAI",
     tagline: "Precision Performance",
     navLinks: [
-      { label: "Home", href: "/#hero" },
-      { label: "Training Styles", href: "/#categories" },
-      { label: "Workouts", href: "/#workouts" },
+      { label: "Home", href: "/" },
+      { label: "Workouts", href: "/workouts" },
+      { label: "Training Styles", href: "/training-styles" },
       { label: "BMI Check", href: "/bmi" },
       { label: "Nutrition", href: "/#nutrition" },
       { label: "Why RepFuel", href: "/#about" },
     ],
-    ctaText: "Get Started",
-    ctaLink: "/#categories"
+    ctaText: "Explore Workouts",
+    ctaLink: "/workouts"
   },
 
   hero: {
@@ -25,11 +25,11 @@ export const homePageContent = {
     subheadline: "AI-engineered workout regimens, progressive overload tracking, and precision nutrition protocols designed to elevate every single rep.",
     primaryCta: {
       text: "Start Your Journey",
-      href: "#categories"
+      href: "/workouts"
     },
     secondaryCta: {
-      text: "Explore Workouts",
-      href: "#workouts"
+      text: "Training Styles",
+      href: "/training-styles"
     },
     stats: [
       { value: "50K+", label: "Active Athletes" },
@@ -239,11 +239,11 @@ export const homePageContent = {
       {
         title: "Platform",
         links: [
-          { label: "Training Categories", href: "#categories" },
-          { label: "Featured Workouts", href: "#workouts" },
-          { label: "Nutrition & Fueling", href: "#nutrition" },
-          { label: "Rep Tracking Engine", href: "#about" },
-          { label: "Athlete Leaderboard", href: "#" }
+          { label: "Workouts", href: "/workouts" },
+          { label: "Training Styles", href: "/training-styles" },
+          { label: "BMI Check", href: "/bmi" },
+          { label: "Nutrition & Fueling", href: "/#nutrition" },
+          { label: "Why RepFuel", href: "/#about" }
         ]
       },
       {

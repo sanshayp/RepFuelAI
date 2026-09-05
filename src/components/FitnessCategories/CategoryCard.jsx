@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Dumbbell, Flame, Zap, HeartPulse, Sparkles, Shield, ArrowRight } from 'lucide-react';
 
 const getCategoryIcon = (iconName) => {
@@ -25,10 +26,10 @@ export const CategoryCard = ({
   title,
   description,
   tag,
-  href = "#workouts"
+  href = "/training-styles"
 }) => {
   return (
-    <a href={href} className="category-card" aria-label={`Explore ${title}`}>
+    <Link to={href} className="category-card" aria-label={`Explore ${title}`}>
       <div className="category-card-top">
         <div className="category-icon-box" aria-hidden="true">
           {getCategoryIcon(icon)}
@@ -42,9 +43,9 @@ export const CategoryCard = ({
       </div>
 
       <div className="category-card-cta">
-        <span>Explore Protocols</span>
+        <span>Explore Style</span>
         <ArrowRight size={16} />
       </div>
-    </a>
+    </Link>
   );
 };

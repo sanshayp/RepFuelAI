@@ -100,9 +100,20 @@
 }
 
 .nav-link:hover::after,
-.nav-link:focus-visible::after {
+.nav-link:focus-visible::after,
+.nav-link.active::after {
   width: 100%;
   left: 0;
+}
+
+.nav-link.active {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.mobile-nav-link.active {
+  color: var(--accent-primary);
+  font-weight: 700;
 }
 
 /* Navbar Actions (Theme Toggle & CTA) */

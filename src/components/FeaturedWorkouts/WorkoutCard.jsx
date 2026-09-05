@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Clock, Flame, ArrowRight, Play } from 'lucide-react';
 
 export const WorkoutCard = ({
@@ -57,10 +58,10 @@ export const WorkoutCard = ({
 
         <div className="workout-card-bottom">
           <span className="workout-rating">★ {rating}</span>
-          <a href="#workouts" className="workout-action-btn" aria-label={`View workout: ${title}`}>
+          <Link to="/workouts" className="workout-action-btn" aria-label={`View workout: ${title}`}>
             <span>View Workout</span>
             <ArrowRight size={14} />
-          </a>
+          </Link>
         </div>
       </div>
     </article>
