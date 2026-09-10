@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { homePageContent } from './data/homePageContent';
-import { SquatPreloader } from './components/Preloader/SquatPreloader';
 import { ScrollToTop } from './components/Common/ScrollToTop';
 import { Navbar } from './components/Navbar/Navbar';
 import { Hero } from './components/Hero/Hero';
@@ -70,18 +69,10 @@ function HomeLandingPage() {
 }
 
 export function App() {
-  const [isPreloaderDone, setIsPreloaderDone] = useState(false);
-
   return (
     <ThemeProvider>
       {/* Scroll restoration & smooth hash scrolling on route change */}
       <ScrollToTop />
-
-      {/* Custom Squatting Man with Dumbbell Preloader */}
-      <SquatPreloader 
-        minDisplayTime={2000} 
-        onComplete={() => setIsPreloaderDone(true)} 
-      />
 
       <div className="app-wrapper">
         {/* Sticky Glass Navbar */}
