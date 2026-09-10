@@ -250,27 +250,21 @@ export const homePageContent = {
         title: "Company",
         links: [
           { label: "About RepFuelAI", href: "#about" },
-          { label: "Science & Methodology", href: "#" },
-          { label: "Careers", href: "#" },
-          { label: "Press & Media", href: "#" },
-          { label: "Contact Us", href: "#" }
+          { label: "Science & Methodology", href: "/science" },
+          { label: "Careers", href: "/careers" },
+          { label: "Press & Media", href: "/press" },
+          { label: "Contact Us", href: "/contact" }
         ]
       },
       {
         title: "Legal & Trust",
         links: [
-          { label: "Privacy Policy", href: "#" },
-          { label: "Terms of Service", href: "#" },
-          { label: "Cookie Settings", href: "#" },
-          { label: "Health & Safety Disclaimer", href: "#" }
+          { label: "Privacy Policy", href: "/privacy" },
+          { label: "Terms of Service", href: "/terms" },
+          { label: "Cookie Settings", href: "/cookies" },
+          { label: "Health & Safety Disclaimer", href: "/disclaimer" }
         ]
       }
-    ],
-    socialLinks: [
-      { platform: "Twitter / X", href: "https://x.com", icon: "Twitter" },
-      { platform: "Instagram", href: "https://instagram.com", icon: "Instagram" },
-      { platform: "YouTube", href: "https://youtube.com", icon: "Youtube" },
-      { platform: "GitHub", href: "https://github.com", icon: "Github" }
     ]
   }
 };

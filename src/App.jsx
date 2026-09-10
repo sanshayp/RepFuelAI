@@ -14,6 +14,7 @@ import { WorkoutsPage } from './components/Workouts/WorkoutsPage';
 import { TrainingStylesPage } from './components/TrainingStyles/TrainingStylesPage';
 import { TipsSection } from './components/NutritionTips/TipsSection';
 import { Footer } from './components/Footer/Footer';
+import { InfoPage } from './components/Common/InfoPage';
 import './App.css';
 
 /**
@@ -114,6 +115,15 @@ export function App() {
               } 
             />
 
+            <Route path="/contact" element={<InfoPage type="contact" />} />
+            <Route path="/privacy" element={<InfoPage type="privacy" />} />
+            <Route path="/terms" element={<InfoPage type="terms" />} />
+            <Route path="/cookies" element={<InfoPage type="cookies" />} />
+            <Route path="/disclaimer" element={<InfoPage type="disclaimer" />} />
+            <Route path="/careers" element={<InfoPage type="careers" />} />
+            <Route path="/press" element={<InfoPage type="press" />} />
+            <Route path="/science" element={<InfoPage type="science" />} />
+
             {/* Catch-all redirect to Home */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
@@ -124,7 +134,6 @@ export function App() {
           brandName={homePageContent.footer.brandName}
           tagline={homePageContent.footer.tagline}
           columns={homePageContent.footer.columns}
-          socialLinks={homePageContent.footer.socialLinks}
         />
       </div>
     </ThemeProvider>
