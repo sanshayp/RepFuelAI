@@ -7,7 +7,7 @@ export const Hero = ({
   headline = "Transform Your Body, Fuel Your Performance",
   subheadline = "AI-engineered workout regimens, progressive overload tracking, and precision nutrition protocols designed to elevate every single rep.",
   primaryCta = { text: "Start Your Journey", href: "#categories" },
-  secondaryCta = { text: "Explore Workouts", href: "#workouts" },
+  secondaryCta = { text: "Training Styles", href: "/training-styles" },
   stats = [],
   heroImage = "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=85"
 }) => {

@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import {
   X,
   Check,
@@ -7,7 +6,6 @@ import {
   Dumbbell,
   Clock,
   Layers,
-  ArrowRight,
   Flame,
   Zap,
   Activity,
@@ -201,17 +199,6 @@ export const TrainingStyleDetails = ({
           )}
         </div>
 
-        {/* Modal Action CTA */}
-        <div className="modal-footer-action">
-          <Link
-            to="/workouts"
-            className="btn-view-workout"
-            onClick={onClose}
-          >
-            <span>Browse {name} Workouts</span>
-            <ArrowRight size={15} />
-          </Link>
-        </div>
       </div>
     </div>
   );

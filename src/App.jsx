@@ -8,9 +8,7 @@ import { Navbar } from './components/Navbar/Navbar';
 import { Hero } from './components/Hero/Hero';
 import { AboutIntro } from './components/AboutIntro/AboutIntro';
 import { CategoryGrid } from './components/FitnessCategories/CategoryGrid';
-import { FeaturedWorkouts } from './components/FeaturedWorkouts/FeaturedWorkouts';
 import { BMICalculator } from './components/BMICalculator/BMICalculator';
-import { WorkoutsPage } from './components/Workouts/WorkoutsPage';
 import { TrainingStylesPage } from './components/TrainingStyles/TrainingStylesPage';
 import { TipsSection } from './components/NutritionTips/TipsSection';
 import { HomeNutritionSnapshot } from './components/HomeDashboard/HomeNutritionSnapshot';
@@ -22,7 +20,7 @@ import './App.css';
 
 /**
  * HomeLandingPage
- * Composes the primary landing page featuring previews for Workouts and Training Styles.
+ * Composes the primary landing page featuring training styles and nutrition guidance.
  */
 function HomeLandingPage() {
   return (
@@ -56,15 +54,7 @@ function HomeLandingPage() {
         items={homePageContent.categories.items}
       />
 
-      {/* Module 4: Featured Workouts Preview */}
-      <FeaturedWorkouts 
-        badge={homePageContent.featuredWorkouts.badge}
-        title={homePageContent.featuredWorkouts.title}
-        subtitle={homePageContent.featuredWorkouts.subtitle}
-        items={homePageContent.featuredWorkouts.items}
-      />
-
-      {/* Module 5: Nutrition Tips */}
+      {/* Module 4: Nutrition Tips */}
       <TipsSection 
         badge={homePageContent.nutritionTips.badge}
         title={homePageContent.nutritionTips.title}
@@ -93,9 +83,6 @@ export function App() {
           <Routes>
             {/* Home Route */}
             <Route path="/" element={<HomeLandingPage />} />
-
-            {/* Dedicated Workouts Route */}
-            <Route path="/workouts" element={<WorkoutsPage />} />
 
             {/* Dedicated Training Styles Route */}
             <Route path="/training-styles" element={<TrainingStylesPage />} />

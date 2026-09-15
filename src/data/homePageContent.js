@@ -8,7 +8,6 @@ export const homePageContent = {
     brandName: "RepFuelAI",
     tagline: "Precision Performance",
     navLinks: [
-      { label: "Workouts", href: "/workouts" },
       { label: "Training Styles", href: "/training-styles" },
       { label: "BMI Check", href: "/bmi" },
       { label: "Nutrition", href: "/nutrition" },
@@ -23,7 +22,7 @@ export const homePageContent = {
     subheadline: "AI-engineered workout regimens, progressive overload tracking, and precision nutrition protocols designed to elevate every single rep.",
     primaryCta: {
       text: "Start Your Journey",
-      href: "/workouts"
+      href: "/training-styles"
     },
     secondaryCta: {
       text: "Training Styles",
@@ -79,7 +78,7 @@ export const homePageContent = {
         title: "Strength & Hypertrophy",
         description: "Build dense contractile muscle mass, boost maximal power, and master compound barbell and dumbbell lifts.",
         tag: "High Resistance",
-        href: "#workouts"
+        href: "/training-styles"
       },
       {
         id: "cat-2",
@@ -87,7 +86,7 @@ export const homePageContent = {
         title: "High-Intensity Interval (HIIT)",
         description: "Maximize EPOC metabolic burn, elevate cardiovascular VO2 max, and incinerate body fat in efficient circuits.",
         tag: "Peak Calorie Burn",
-        href: "#workouts"
+        href: "/training-styles"
       },
       {
         id: "cat-3",
@@ -95,7 +94,7 @@ export const homePageContent = {
         title: "Functional Bodyweight",
         description: "Develop gymnastic-level calisthenics control, rotational core strength, and injury-resistant joints.",
         tag: "Zero Equipment",
-        href: "#workouts"
+        href: "/training-styles"
       },
       {
         id: "cat-4",
@@ -103,7 +102,7 @@ export const homePageContent = {
         title: "Athletic Conditioning",
         description: "Engineered endurance conditioning that enhances aerobic threshold and keeps your engine running strong.",
         tag: "Cardio Stamina",
-        href: "#workouts"
+        href: "/training-styles"
       },
       {
         id: "cat-5",
@@ -111,7 +110,7 @@ export const homePageContent = {
         title: "Dynamic Yoga & Mobility",
         description: "Restore hip and thoracic range of motion, decompress spinal load, and accelerate active muscle recovery.",
         tag: "Mobility & Flow",
-        href: "#workouts"
+        href: "/training-styles"
       },
       {
         id: "cat-6",
@@ -119,75 +118,7 @@ export const homePageContent = {
         title: "Core & Kinetic Pilates",
         description: "Deep anterior and posterior chain reinforcement designed to stabilize your pelvis and shield your lower back.",
         tag: "Core Stability",
-        href: "#workouts"
-      }
-    ]
-  },
-
-  featuredWorkouts: {
-    badge: "PROVEN PROTOCOLS",
-    title: "Featured Workouts",
-    subtitle: "Handcrafted, battle-tested routines programmed by world-class strength coaches and amplified by AI tracking.",
-    items: [
-      {
-        id: "wo-1",
-        title: "Full Body Hypertrophy Forge",
-        category: "Strength",
-        duration: "45 min",
-        difficulty: "Intermediate",
-        calories: "420 kcal",
-        image: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=800&q=80",
-        rating: "4.9 (1.4k reviews)"
-      },
-      {
-        id: "wo-2",
-        title: "Metabolic Inferno HIIT",
-        category: "HIIT",
-        duration: "30 min",
-        difficulty: "Advanced",
-        calories: "390 kcal",
-        image: "https://images.unsplash.com/photo-1601422407692-ec4eeec1d9b3?auto=format&fit=crop&w=800&q=80",
-        rating: "4.8 (920 reviews)"
-      },
-      {
-        id: "wo-3",
-        title: "Kinetic Core & Calisthenics",
-        category: "Bodyweight",
-        duration: "25 min",
-        difficulty: "Beginner",
-        calories: "210 kcal",
-        image: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80",
-        rating: "4.9 (2.1k reviews)"
-      },
-      {
-        id: "wo-4",
-        title: "Power Sprint & Engine Builder",
-        category: "Cardio",
-        duration: "35 min",
-        difficulty: "Intermediate",
-        calories: "450 kcal",
-        image: "https://images.unsplash.com/photo-1434725039720-aaad6dd32dfe?auto=format&fit=crop&w=800&q=80",
-        rating: "4.7 (780 reviews)"
-      },
-      {
-        id: "wo-5",
-        title: "Thoracic Mobility & Deep Flow",
-        category: "Mobility",
-        duration: "20 min",
-        difficulty: "Beginner",
-        calories: "130 kcal",
-        image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=800&q=80",
-        rating: "4.9 (1.8k reviews)"
-      },
-      {
-        id: "wo-6",
-        title: "Posterior Chain Deadlift Focus",
-        category: "Strength",
-        duration: "50 min",
-        difficulty: "Advanced",
-        calories: "510 kcal",
-        image: "https://images.unsplash.com/photo-1517963879433-6ad2b056d712?auto=format&fit=crop&w=800&q=80",
-        rating: "5.0 (3.2k reviews)"
+        href: "/training-styles"
       }
     ]
   },
@@ -237,7 +168,6 @@ export const homePageContent = {
       {
         title: "Platform",
         links: [
-          { label: "Workouts", href: "/workouts" },
           { label: "Training Styles", href: "/training-styles" },
           { label: "BMI Check", href: "/bmi" },
           { label: "Nutrition & Fueling", href: "/#nutrition" },
