@@ -65,7 +65,7 @@ const BmiRouteWrapper = ({ userHeight, userWeight }) => {
  */
 function HomeLandingPage() {
   const [isWaterTrackerOpen, setIsWaterTrackerOpen] = useState(false);
-  
+
   return (
     <>
       <Hero 
@@ -78,9 +78,7 @@ function HomeLandingPage() {
         heroImage={homePageContent.hero.heroImage}
       />
 
-      <section style={{ maxWidth: '1200px', margin: '2rem auto', padding: '0 1rem' }}>
-        <WaterTracker />
-      </section>
+      
 
       <AboutIntro 
         badge={homePageContent.aboutIntro.badge}
@@ -104,9 +102,7 @@ function HomeLandingPage() {
         items={homePageContent.featuredWorkouts.items}
       />
 
-      <section style={{ maxWidth: '1200px', margin: '2rem auto', padding: '0 1rem' }}>
-        <WorkoutTracker />
-      </section>
+      
 
       <TipsSection 
         badge={homePageContent.nutritionTips.badge}
@@ -127,21 +123,19 @@ function HomeLandingPage() {
               borderRadius: '50px',
               padding: '12px 20px',
               display: 'flex',
-              alignItem: 'center',
+              alignItems: 'center',
               gap: '8px',
               cursor: 'pointer',
               boxShadow: '0 4px 20px rgba(14, 165, 233, 0.4)',
               fontWeight: 'bold',
-              fontSize: '0.95rem',
-              transition: 'transform 0.2s'
+              fontSize: '0.95rem'
             }}
-            title="Open Water Tracker"
           >
             🥛 Drink Water
           </button>
         ) : (
           <div style={{ position: 'relative' }}>
-            {/* Close popup cross button */}
+            {/* Close cross button */}
             <button
               onClick={() => setIsWaterTrackerOpen(false)}
               style={{
