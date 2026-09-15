@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
+import { NutritionProgressProvider } from './context/NutritionProgressContext';
 import { homePageContent } from './data/homePageContent';
 import { ScrollToTop } from './components/Common/ScrollToTop';
 import { Navbar } from './components/Navbar/Navbar';
@@ -12,8 +13,11 @@ import { BMICalculator } from './components/BMICalculator/BMICalculator';
 import { WorkoutsPage } from './components/Workouts/WorkoutsPage';
 import { TrainingStylesPage } from './components/TrainingStyles/TrainingStylesPage';
 import { TipsSection } from './components/NutritionTips/TipsSection';
+import { HomeNutritionSnapshot } from './components/HomeDashboard/HomeNutritionSnapshot';
 import { Footer } from './components/Footer/Footer';
 import { InfoPage } from './components/Common/InfoPage';
+import { NutritionPage } from './pages/Nutrition/NutritionPage';
+import { ProgressPage } from './pages/Progress/ProgressPage';
 import './App.css';
 
 /**
@@ -32,6 +36,9 @@ function HomeLandingPage() {
         stats={homePageContent.hero.stats}
         heroImage={homePageContent.hero.heroImage}
       />
+
+      {/* Real-time Nutrition & Steps Live Sync Dashboard */}
+      <HomeNutritionSnapshot />
 
       <AboutIntro 
         badge={homePageContent.aboutIntro.badge}
@@ -71,10 +78,11 @@ function HomeLandingPage() {
 export function App() {
   return (
     <ThemeProvider>
-      {/* Scroll restoration & smooth hash scrolling on route change */}
-      <ScrollToTop />
+      <NutritionProgressProvider>
+        {/* Scroll restoration & smooth hash scrolling on route change */}
+        <ScrollToTop />
 
-      <div className="app-wrapper">
+        <div className="app-wrapper">
         {/* Sticky Glass Navbar */}
         <Navbar 
           brandName={homePageContent.navbar.brandName}
@@ -106,6 +114,10 @@ export function App() {
               } 
             />
 
+            {/* Experimental Module Routes */}
+            <Route path="/nutrition" element={<NutritionPage />} />
+            <Route path="/progress" element={<ProgressPage />} />
+
             <Route path="/contact" element={<InfoPage type="contact" />} />
             <Route path="/privacy" element={<InfoPage type="privacy" />} />
             <Route path="/terms" element={<InfoPage type="terms" />} />
@@ -127,6 +139,7 @@ export function App() {
           columns={homePageContent.footer.columns}
         />
       </div>
+      </NutritionProgressProvider>
     </ThemeProvider>
   );
 }

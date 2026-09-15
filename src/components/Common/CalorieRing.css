@@ -1,0 +1,141 @@
+/* RepFuelAI Calorie Ring Component Styles */
+
+.calorie-ring-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.calorie-ring-svg-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calorie-ring-svg {
+  transform: rotate(0deg);
+  transition: all var(--transition-normal);
+}
+
+.calorie-ring-track {
+  transition: stroke 0.3s ease;
+}
+
+.calorie-ring-fill {
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s ease;
+}
+
+.calorie-ring-center-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+  width: 78%;
+}
+
+.calorie-ring-consumed {
+  font-family: var(--font-heading, sans-serif);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.calorie-ring-container.compact .calorie-ring-consumed {
+  font-size: 1.35rem;
+}
+
+.calorie-ring-container.standard .calorie-ring-consumed {
+  font-size: 2.1rem;
+}
+
+.calorie-ring-container.large .calorie-ring-consumed {
+  font-size: 2.6rem;
+}
+
+.calorie-ring-unit {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.calorie-ring-target {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.calorie-ring-container.compact .calorie-ring-target {
+  font-size: 0.72rem;
+}
+
+.calorie-ring-badge {
+  margin-top: 6px;
+}
+
+.ring-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-full, 9999px);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.ring-tag.percent {
+  background: rgba(255, 94, 30, 0.15);
+  color: var(--accent-primary, #FF5E1E);
+  border: 1px solid rgba(255, 94, 30, 0.3);
+}
+
+.ring-tag.over {
+  background: rgba(239, 68, 68, 0.18);
+  color: #EF4444;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  animation: pulse-over 2s infinite ease-in-out;
+}
+
+@keyframes pulse-over {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+
+.calorie-ring-footer-text {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.ring-status-msg.remaining {
+  color: var(--text-secondary);
+}
+
+.ring-status-msg.remaining strong {
+  color: var(--volt-green, #22C55E);
+  font-weight: 700;
+}
+
+.ring-status-msg.over {
+  color: #EF4444;
+}
+
+.ring-status-msg.over strong {
+  color: #EF4444;
+}
+
+.calorie-ring-container.over-target .calorie-ring-consumed {
+  color: #EF4444;
+}

@@ -1,0 +1,241 @@
+/* RepFuelAI Calendar Progress View Styles */
+
+.calendar-progress-card {
+  background: var(--glass-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6, 1.5rem);
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+.calendar-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.calendar-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.calendar-badge-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--accent-gradient);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.calendar-title-group h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.calendar-title-group p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Legend Pills */
+.calendar-legend-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.legend-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border);
+}
+
+.legend-pill.very-low { color: #EF4444; border-color: rgba(239, 68, 68, 0.3); }
+.legend-pill.low { color: #F59E0B; border-color: rgba(245, 158, 11, 0.3); }
+.legend-pill.moderate { color: #38BDF8; border-color: rgba(56, 189, 248, 0.3); }
+.legend-pill.high { color: #22C55E; border-color: rgba(34, 197, 94, 0.3); }
+.legend-pill.completed { color: #FF5E1E; border-color: rgba(255, 94, 30, 0.4); }
+
+.legend-pill .glyph {
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+/* Calendar Grid */
+.calendar-grid-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.calendar-weekdays-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  text-align: center;
+}
+
+.calendar-weekday-cell {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 4px 0;
+  letter-spacing: 0.05em;
+}
+
+.calendar-days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.calendar-day-cell {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 8px 6px;
+  min-height: 76px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  text-align: center;
+}
+
+.calendar-day-cell:hover:not(.empty):not(.is-future) {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 94, 30, 0.35);
+  transform: translateY(-2px);
+}
+
+.calendar-day-cell.selected {
+  background: rgba(255, 94, 30, 0.12);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 14px rgba(255, 94, 30, 0.25);
+}
+
+.calendar-day-cell.is-today {
+  border-color: var(--volt-green, #22C55E);
+}
+
+.calendar-day-cell.is-future {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.calendar-day-cell.empty {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+}
+
+.cell-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 2px;
+}
+
+.day-number-text {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.cheat-meal-icon-indicator {
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.today-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--volt-green);
+  box-shadow: 0 0 6px var(--volt-green);
+}
+
+/* Day Progress Circle & Glyphs */
+.day-circle-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.day-circle-wrap.very_low { color: #EF4444; }
+.day-circle-wrap.low { color: #F59E0B; }
+.day-circle-wrap.moderate { color: #38BDF8; }
+.day-circle-wrap.high { color: #22C55E; }
+.day-circle-wrap.completed { color: #FF5E1E; }
+
+.day-circle-fill {
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.day-tier-glyph {
+  position: absolute;
+  font-size: 0.65rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.day-circle.future {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.cell-score-subtext {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.calendar-card-footer {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--glass-border);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+  .calendar-day-cell {
+    min-height: 64px;
+    padding: 4px;
+  }
+  .cell-score-subtext {
+    display: none;
+  }
+}

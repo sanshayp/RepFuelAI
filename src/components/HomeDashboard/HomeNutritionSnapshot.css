@@ -1,0 +1,514 @@
+/* Home Page Nutrition & Steps Snapshot Styles */
+
+.home-nutrition-snapshot-section {
+  width: 100%;
+  padding: var(--space-12, 3rem) var(--space-6, 1.5rem);
+  position: relative;
+  background: radial-gradient(circle at 50% 0%, rgba(255, 94, 30, 0.05) 0%, transparent 60%);
+  border-top: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.home-snapshot-container {
+  max-width: var(--container-max-width, 1200px);
+  margin: 0 auto;
+}
+
+.home-snapshot-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8, 2rem);
+}
+
+.home-snapshot-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 94, 30, 0.12);
+  color: var(--accent-primary, #FF5E1E);
+  border: 1px solid rgba(255, 94, 30, 0.25);
+  border-radius: var(--radius-full, 9999px);
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-2, 0.5rem);
+}
+
+.home-snapshot-title {
+  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+
+.home-snapshot-desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  max-width: 620px;
+}
+
+.home-snapshot-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+}
+
+.snapshot-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-gradient, linear-gradient(135deg, #FF8A00 0%, #FF5E1E 100%));
+  color: #FFFFFF;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius-md, 8px);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 14px var(--accent-glow, rgba(255, 94, 30, 0.3));
+}
+
+.snapshot-link-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--accent-glow, rgba(255, 94, 30, 0.45));
+}
+
+.snapshot-link-btn.secondary {
+  background: var(--glass-card, rgba(255, 255, 255, 0.04));
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+  box-shadow: none;
+}
+
+.snapshot-link-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* 3-Card Grid */
+.home-snapshot-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6, 1.5rem);
+}
+
+@media (max-width: 980px) {
+  .home-snapshot-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.snapshot-card {
+  background: var(--glass-card, rgba(255, 255, 255, 0.03));
+  backdrop-filter: var(--glass-blur, blur(16px));
+  -webkit-backdrop-filter: var(--glass-blur, blur(16px));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-xl, 16px);
+  padding: var(--space-6, 1.5rem);
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform var(--transition-normal), border-color var(--transition-normal);
+}
+
+.snapshot-card:hover {
+  border-color: rgba(255, 94, 30, 0.3);
+  transform: translateY(-2px);
+}
+
+.snapshot-card-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  margin-bottom: var(--space-5, 1.25rem);
+}
+
+.snapshot-icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md, 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+}
+
+.snapshot-icon-box.orange {
+  background: var(--accent-gradient);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.snapshot-icon-box.green {
+  background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.35);
+}
+
+.snapshot-icon-box.purple {
+  background: linear-gradient(135deg, #A855F7 0%, #7C3AED 100%);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.35);
+}
+
+.snapshot-card-title-wrap {
+  flex: 1;
+}
+
+.snapshot-card-title-wrap h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.snapshot-card-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Card 1 Body: Calorie Ring & Compact Macros */
+.calorie-ring-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4, 1rem);
+}
+
+.compact-macros-list {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  padding-top: var(--space-3, 0.75rem);
+  border-top: 1px solid var(--glass-border);
+}
+
+.compact-macro-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+}
+
+.compact-macro-header {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.compact-macro-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.compact-macro-dot.protein { background: #38BDF8; }
+.compact-macro-dot.carbs { background: #FBBF24; }
+.compact-macro-dot.fats { background: #EC4899; }
+
+.compact-macro-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.compact-macro-val {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.compact-macro-goal {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* Card 2: Steps */
+.step-metric-primary {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: var(--space-3);
+}
+
+.step-number {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.step-divider {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+}
+
+.step-goal {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.step-edit-btn {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  padding: 5px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.step-edit-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+}
+
+.step-progress-track {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-2);
+}
+
+.step-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10B981, #22C55E);
+  border-radius: var(--radius-full);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+}
+
+.step-subline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  margin-bottom: var(--space-4);
+}
+
+.step-pct-label {
+  font-weight: 700;
+  color: #22C55E;
+}
+
+.step-remaining-label {
+  color: var(--text-muted);
+}
+
+.quick-step-steppers {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.quick-step-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  padding: 6px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all var(--transition-fast);
+}
+
+.quick-step-btn:hover {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.4);
+  color: #22C55E;
+}
+
+.step-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.step-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.step-input-group label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.step-number-input {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.step-number-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.step-form-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.step-save-btn {
+  background: #22C55E;
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.step-cancel-btn {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+/* Card 3: Daily Progress Score */
+.daily-score-hero {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.daily-score-number-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.daily-score-big {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.daily-score-denom {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.daily-score-badge {
+  background: rgba(168, 85, 247, 0.15);
+  color: #C084FC;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: var(--radius-full);
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.score-progress-track {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-4);
+}
+
+.score-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #A855F7, #EC4899);
+  border-radius: var(--radius-full);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+}
+
+.metrics-pill-breakdown {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.pill-metric {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 6px 4px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pill-name {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.pill-val {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Card Footers */
+.snapshot-card-footer {
+  margin-top: var(--space-4, 1rem);
+  padding-top: var(--space-3, 0.75rem);
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+}
+
+.logged-counter {
+  color: var(--text-muted);
+}
+
+.footer-inline-link {
+  color: var(--accent-primary);
+  text-decoration: none;
+  font-weight: 700;
+  transition: color var(--transition-fast);
+}
+
+.footer-inline-link:hover {
+  text-decoration: underline;
+  color: #FFA043;
+}
+
+.step-disclaimer {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+}

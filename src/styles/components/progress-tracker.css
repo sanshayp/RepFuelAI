@@ -1,0 +1,732 @@
+/* RepFuelAI Progress Tracker & Gamification Styles */
+
+.progress-tracker-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  width: 100%;
+}
+
+/* ==========================================================================
+   ATHLETE GAMIFICATION HERO CARD
+   ========================================================================== */
+.gamification-hero-card {
+  background: var(--glass-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--card-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.gamification-hero-card::before {
+  content: '';
+  position: absolute;
+  top: -70px;
+  right: -70px;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(0, 245, 155, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+.gamification-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.level-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.level-icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #00F59B 0%, #00B872 100%);
+  color: #0F0F11;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(0, 245, 155, 0.3);
+}
+
+.level-title-info h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.level-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.streak-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 94, 30, 0.12);
+  border: 1px solid rgba(255, 94, 30, 0.35);
+  color: var(--accent-primary);
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  font-weight: 800;
+  font-size: 0.95rem;
+  box-shadow: 0 0 15px rgba(255, 94, 30, 0.2);
+}
+
+/* Level Progress Bar */
+.level-progress-block {
+  margin-bottom: var(--space-6);
+}
+
+.level-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.level-progress-track {
+  width: 100%;
+  height: 14px;
+  background: var(--input-bg);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+}
+
+.level-progress-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, #00F59B 0%, #38BDF8 100%);
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Today Action Checkoff Bar */
+.today-quest-bar {
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.today-quest-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.today-quest-info h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.today-quest-info p {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.workout-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all var(--transition-fast);
+  border: 1px solid var(--glass-border);
+}
+
+.workout-toggle-btn.completed {
+  background: var(--volt-green);
+  color: #0F0F11;
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.4);
+  border-color: var(--volt-green);
+}
+
+.workout-toggle-btn.incomplete {
+  background: var(--input-bg);
+  color: var(--text-primary);
+}
+
+.workout-toggle-btn.incomplete:hover {
+  border-color: var(--volt-green);
+}
+
+/* Motivational XP Rules Bar */
+.xp-rules-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+}
+
+.xp-rule-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+}
+
+.xp-rule-tag span {
+  color: var(--text-muted);
+}
+
+.xp-rule-tag strong {
+  color: #C084FC;
+}
+
+/* ==========================================================================
+   DAILY COMPOSITE PROGRESS SCORE CARD (Requirement 13)
+   ========================================================================== */
+.daily-composite-score-card {
+  background: var(--glass-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6, 1.5rem);
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  position: relative;
+  overflow: hidden;
+}
+
+.daily-composite-score-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #A855F7 0%, #EC4899 100%);
+}
+
+.composite-score-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.composite-score-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.composite-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #A855F7 0%, #7C3AED 100%);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.4);
+}
+
+.composite-score-title-group h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.composite-score-title-group p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 2px 0 0 0;
+}
+
+.composite-score-digits {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.score-big-num {
+  font-family: var(--font-heading);
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.score-denom {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.score-pct-badge {
+  background: rgba(168, 85, 247, 0.15);
+  color: #C084FC;
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-radius: var(--radius-full);
+  padding: 3px 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.composite-progress-track {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.composite-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #A855F7 0%, #EC4899 50%, #FF5E1E 100%);
+  border-radius: var(--radius-full);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
+}
+
+.composite-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-2);
+  margin-top: 2px;
+}
+
+@media (max-width: 900px) {
+  .composite-metrics-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .composite-metrics-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.composite-metric-pill {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: center;
+}
+
+.cmp-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.cmp-val {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.cmp-sub {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.workout-toggle-btn.completed {
+  background: var(--volt-green-subtle);
+  border-color: var(--volt-green-border);
+  color: var(--volt-green);
+}
+
+.workout-toggle-btn.incomplete {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+}
+
+.workout-toggle-btn:hover {
+  transform: scale(1.03);
+}
+
+/* ==========================================================================
+   WEEKLY GRAPH SECTION
+   ========================================================================== */
+.weekly-graph-card {
+  background: var(--glass-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--card-shadow);
+}
+
+.weekly-graph-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.weekly-graph-header h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.weekly-graph-header p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.graph-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legend-dot.increase { background-color: var(--volt-green); }
+.legend-dot.decrease { background-color: #EF4444; }
+
+/* SVG Graph Canvas */
+.svg-chart-wrapper {
+  width: 100%;
+  margin: var(--space-6) 0;
+  position: relative;
+}
+
+.svg-chart {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chart-grid-line {
+  stroke: var(--glass-border);
+  stroke-dasharray: 4 4;
+}
+
+.chart-axis-label {
+  fill: var(--text-muted);
+  font-size: 11px;
+  font-family: var(--font-body);
+}
+
+.chart-data-node {
+  cursor: pointer;
+  transition: transform 0.2s ease, r 0.2s ease;
+}
+
+.chart-data-node:hover {
+  r: 8px;
+}
+
+/* Day Cards Row Below Graph */
+.days-breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.day-performance-cell {
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.day-performance-cell:hover {
+  transform: translateY(-2px);
+  border-color: var(--glass-border-hover);
+}
+
+.day-performance-cell.highlight {
+  border-color: var(--accent-primary);
+  background: rgba(255, 94, 30, 0.05);
+}
+
+.day-cell-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.day-cell-score {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.day-cell-delta {
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.day-cell-delta.up { color: var(--volt-green); }
+.day-cell-delta.down { color: #EF4444; }
+
+/* ==========================================================================
+   STATISTICS SUMMARY ROW
+   ========================================================================== */
+.stats-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.stat-metric-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.stat-card-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.stat-card-value {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.stat-card-note {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   ACHIEVEMENTS SECTION
+   ========================================================================== */
+.achievements-section {
+  background: var(--glass-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--card-shadow);
+}
+
+.achievements-header {
+  margin-bottom: var(--space-6);
+}
+
+.achievements-header h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.achievements-header p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.achievement-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.achievement-card.unlocked {
+  border-color: rgba(0, 245, 155, 0.4);
+  background: rgba(0, 245, 155, 0.04);
+  box-shadow: 0 0 15px rgba(0, 245, 155, 0.08);
+}
+
+.achievement-card.locked {
+  opacity: 0.65;
+}
+
+.achievement-card:hover {
+  transform: translateY(-2px);
+}
+
+.achievement-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.achievement-card.unlocked .achievement-icon-box {
+  background: var(--volt-green);
+  color: #0F0F11;
+  box-shadow: 0 0 12px rgba(0, 245, 155, 0.4);
+}
+
+.achievement-card.locked .achievement-icon-box {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+}
+
+.achievement-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.achievement-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.achievement-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.achievement-badge-xp {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.achievement-card.unlocked .achievement-badge-xp {
+  background: var(--volt-green-subtle);
+  color: var(--volt-green);
+  border: 1px solid var(--volt-green-border);
+}
+
+.achievement-card.locked .achievement-badge-xp {
+  background: var(--input-bg);
+  color: var(--text-muted);
+}
+
+.achievement-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.achievement-status-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.achievement-card.unlocked .achievement-status-tag {
+  color: var(--volt-green);
+}
+
+.achievement-card.locked .achievement-status-tag {
+  color: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .stats-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .days-breakdown-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .gamification-hero-card,
+  .weekly-graph-card,
+  .achievements-section {
+    padding: var(--space-5);
+  }
+  .stats-summary-grid {
+    grid-template-columns: 1fr;
+  }
+  .days-breakdown-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

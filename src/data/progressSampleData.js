@@ -1,0 +1,637 @@
+/**
+ * Athlete Progress, Calendar & Sample Historical Data
+ * RepFuelAI Experimental Progress Module
+ * Realistic consistency tracking with increases, dips, cheat meals and step counts.
+ */
+
+// Helper to categorize score into completion tiers
+export const getScoreCategory = (score) => {
+  if (score >= 100) return 'completed';
+  if (score >= 76) return 'high';
+  if (score >= 51) return 'moderate';
+  if (score >= 26) return 'low';
+  return 'very_low';
+};
+
+// 30 Days of September 2026 Progress History
+export const defaultCalendarDays = [
+  {
+    dayNumber: 1,
+    dayName: "Tue",
+    dateString: "September 1, 2026",
+    calories: 2280,
+    calorieTarget: 2400,
+    protein: 132,
+    proteinGoal: 140,
+    steps: 10420,
+    stepGoal: 10000,
+    workoutDone: true,
+    hasCheatMeal: false,
+    score: 92,
+    xpEarned: 95
+  },
+  {
+    dayNumber: 2,
+    dayName: "Wed",
+    dateString: "September 2, 2026",
+    calories: 2350,
+    calorieTarget: 2400,
+    protein: 138,
+    proteinGoal: 140,
+    steps: 10150,
+    stepGoal: 10000,
+    workoutDone: true,
+    hasCheatMeal: false,
+    score: 96,
+    xpEarned: 100
+  },
+  {
+    dayNumber: 3,
+    dayName: "Thu",
+    dateString: "September 3, 2026",
+    calories: 1980,
+    calorieTarget: 2400,
+    protein: 105,
+    proteinGoal: 140,
+    steps: 8200,
+    stepGoal: 10000,
+    workoutDone: true,
+    hasCheatMeal: false,
+    score: 72,
+    xpEarned: 70
+  },
+  {
+    dayNumber: 4,
+    dayName: "Fri",
+    dateString: "September 4, 2026",
+    calories: 2450,
+    calorieTarget: 2400,
+    protein: 142,
+    proteinGoal: 140,
+    steps: 11200,
+    stepGoal: 10000,
+    workoutDone: true,
+    hasCheatMeal: false,
+    score: 100,
+    xpEarned: 110
+  },
+  {
+    dayNumber: 5,
+    dayName: "Sat",
+    dateString: "September 5, 2026",
+    calories: 2850,
+    calorieTarget: 2400,
+    protein: 98,
+    proteinGoal: 140,
+    steps: 5400,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: true,
+    cheatMealName: "Pav Bhaji & Sweet Lassi",
+    score: 44,
+    xpEarned: 35
+  },
+  {
+    dayNumber: 6,
+    dayName: "Sun",
+    dateString: "September 6, 2026",
+    calories: 2150,
+    calorieTarget: 2400,
+    protein: 110,
+    proteinGoal: 140,
+    steps: 7100,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 58,
+    xpEarned: 50
+  },
+  {
+    dayNumber: 7,
+    dayName: "Mon",
+    dateString: "September 7, 2026",
+    calories: 2380,
+    calorieTarget: 2400,
+    protein: 145,
+    proteinGoal: 140,
+    steps: 10300,
+    stepGoal: 10000,
+    workoutDone: true,
+    hasCheatMeal: false,
+    score: 95,
+    xpEarned: 100
+  },
+  {
+    dayNumber: 8,
+    dayName: "Tue",
+    dateString: "September 8, 2026",
+    calories: 2290,
+    calorieTarget: 2400,
+    protein: 135,
+    proteinGoal: 140,
+    steps: 9800,
+    stepGoal: 10000,
+    workoutDone: true,
+    hasCheatMeal: false,
+    score: 88,
+    xpEarned: 90
+  },
+  {
+    dayNumber: 9,
+    dayName: "Wed",
+    dateString: "September 9, 2026",
+    calories: 1650,
+    calorieTarget: 2400,
+    protein: 72,
+    proteinGoal: 140,
+    steps: 4200,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 32, // Very low adherence day
+    xpEarned: 25
+  },
+  {
+    dayNumber: 10,
+    dayName: "Thu",
+    dateString: "September 10, 2026",
+    calories: 2410,
+    calorieTarget: 2400,
+    protein: 148,
+    proteinGoal: 140,
+    steps: 10800,
+    stepGoal: 10000,
+    workoutDone: true,
+    hasCheatMeal: false,
+    score: 98,
+    xpEarned: 105
+  },
+  {
+    dayNumber: 11,
+    dayName: "Fri",
+    dateString: "September 11, 2026",
+    calories: 2320,
+    calorieTarget: 2400,
+    protein: 130,
+    proteinGoal: 140,
+    steps: 9100,
+    stepGoal: 10000,
+    workoutDone: true,
+    hasCheatMeal: false,
+    score: 84,
+    xpEarned: 85
+  },
+  {
+    dayNumber: 12,
+    dayName: "Sat",
+    dateString: "September 12, 2026",
+    calories: 2750,
+    calorieTarget: 2400,
+    protein: 105,
+    proteinGoal: 140,
+    steps: 6800,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: true,
+    cheatMealName: "Paneer Butter Masala & Garlic Naan",
+    score: 52,
+    xpEarned: 45
+  },
+  {
+    dayNumber: 13,
+    dayName: "Sun",
+    dateString: "September 13, 2026",
+    calories: 2200,
+    calorieTarget: 2400,
+    protein: 125,
+    proteinGoal: 140,
+    steps: 8900,
+    stepGoal: 10000,
+    workoutDone: true,
+    hasCheatMeal: false,
+    score: 79,
+    xpEarned: 80
+  },
+  // Day 14 is TODAY (live state binds to this)
+  {
+    dayNumber: 14,
+    dayName: "Mon",
+    dateString: "September 14, 2026",
+    calories: 1850,
+    calorieTarget: 2400,
+    protein: 118,
+    proteinGoal: 140,
+    steps: 8450,
+    stepGoal: 10000,
+    workoutDone: true,
+    hasCheatMeal: false,
+    score: 82,
+    xpEarned: 85,
+    isToday: true
+  },
+  {
+    dayNumber: 15,
+    dayName: "Tue",
+    dateString: "September 15, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  },
+  {
+    dayNumber: 16,
+    dayName: "Wed",
+    dateString: "September 16, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  },
+  {
+    dayNumber: 17,
+    dayName: "Thu",
+    dateString: "September 17, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  },
+  {
+    dayNumber: 18,
+    dayName: "Fri",
+    dateString: "September 18, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  },
+  {
+    dayNumber: 19,
+    dayName: "Sat",
+    dateString: "September 19, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  },
+  {
+    dayNumber: 20,
+    dayName: "Sun",
+    dateString: "September 20, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  },
+  {
+    dayNumber: 21,
+    dayName: "Mon",
+    dateString: "September 21, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  },
+  {
+    dayNumber: 22,
+    dayName: "Tue",
+    dateString: "September 22, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  },
+  {
+    dayNumber: 23,
+    dayName: "Wed",
+    dateString: "September 23, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  },
+  {
+    dayNumber: 24,
+    dayName: "Thu",
+    dateString: "September 24, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  },
+  {
+    dayNumber: 25,
+    dayName: "Fri",
+    dateString: "September 25, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  },
+  {
+    dayNumber: 26,
+    dayName: "Sat",
+    dateString: "September 26, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  },
+  {
+    dayNumber: 27,
+    dayName: "Sun",
+    dateString: "September 27, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  },
+  {
+    dayNumber: 28,
+    dayName: "Mon",
+    dateString: "September 28, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  },
+  {
+    dayNumber: 29,
+    dayName: "Tue",
+    dateString: "September 29, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  },
+  {
+    dayNumber: 30,
+    dayName: "Wed",
+    dateString: "September 30, 2026",
+    calories: 0,
+    calorieTarget: 2400,
+    protein: 0,
+    proteinGoal: 140,
+    steps: 0,
+    stepGoal: 10000,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 0,
+    xpEarned: 0,
+    isFuture: true
+  }
+];
+
+// Current 7-Day Window (Monday Sep 8 to Sunday Sep 14) for Weekly Graph
+export const defaultWeeklyHistory = [
+  {
+    day: "Mon",
+    fullDay: "Monday, Sep 8",
+    calories: 2290,
+    protein: 135,
+    steps: 9800,
+    workoutDone: true,
+    hasCheatMeal: false,
+    score: 88,
+    status: "baseline"
+  },
+  {
+    day: "Tue",
+    fullDay: "Tuesday, Sep 9",
+    calories: 1650,
+    protein: 72,
+    steps: 4200,
+    workoutDone: false,
+    hasCheatMeal: false,
+    score: 32, // Dip / poor day
+    status: "decreased"
+  },
+  {
+    day: "Wed",
+    fullDay: "Wednesday, Sep 10",
+    calories: 2410,
+    protein: 148,
+    steps: 10800,
+    workoutDone: true,
+    hasCheatMeal: false,
+    score: 98, // Rise / peak day
+    status: "increased"
+  },
+  {
+    day: "Thu",
+    fullDay: "Thursday, Sep 11",
+    calories: 2320,
+    protein: 130,
+    steps: 9100,
+    workoutDone: true,
+    hasCheatMeal: false,
+    score: 84, // Slight fall
+    status: "decreased"
+  },
+  {
+    day: "Fri",
+    fullDay: "Friday, Sep 12",
+    calories: 2750,
+    protein: 105,
+    steps: 6800,
+    workoutDone: false,
+    hasCheatMeal: true,
+    cheatMealName: "Butter Chicken & Garlic Naan",
+    score: 52, // Rest / cheat day dip
+    status: "decreased"
+  },
+  {
+    day: "Sat",
+    fullDay: "Saturday, Sep 13",
+    calories: 2200,
+    protein: 125,
+    steps: 8900,
+    workoutDone: true,
+    hasCheatMeal: false,
+    score: 79, // Rise
+    status: "increased"
+  },
+  {
+    day: "Sun",
+    fullDay: "Sunday, Sep 14 (Today)",
+    calories: 1850,
+    protein: 118,
+    steps: 8450,
+    workoutDone: true,
+    hasCheatMeal: false,
+    score: 82, // Live synced with today's state
+    status: "increased"
+  }
+];
+
+export const initialAchievements = [
+  {
+    id: "first_log",
+    title: "First Fuel Log",
+    description: "Log your first authentic Indian meal to ignite your metabolic engine",
+    icon: "Utensils",
+    unlocked: true,
+    badgeText: "+10 XP"
+  },
+  {
+    id: "streak_3",
+    title: "3-Day Consistency Streak",
+    description: "Maintain consecutive logging and adherence for 3 days",
+    icon: "Flame",
+    unlocked: true,
+    badgeText: "+25 XP"
+  },
+  {
+    id: "streak_7",
+    title: "7-Day Discipline Master",
+    description: "Conquer a full week of workouts and nutrition tracking",
+    icon: "Award",
+    unlocked: false,
+    badgeText: "+50 XP"
+  },
+  {
+    id: "calorie_goal",
+    title: "Calorie Precision Target",
+    description: "Stay within your daily calorie target window",
+    icon: "Target",
+    unlocked: true,
+    badgeText: "+30 XP"
+  },
+  {
+    id: "protein_powerhouse",
+    title: "Protein Powerhouse",
+    description: "Reach at least 100g of protein in a single day",
+    icon: "Dumbbell",
+    unlocked: true,
+    badgeText: "+20 XP"
+  },
+  {
+    id: "step_champion",
+    title: "10,000 Steps Champion",
+    description: "Crush your daily step goal of 10,000 steps",
+    icon: "Footprints",
+    unlocked: false,
+    badgeText: "+20 XP"
+  },
+  {
+    id: "workout_complete",
+    title: "Workout Finisher",
+    description: "Mark your daily training session completed",
+    icon: "CheckCircle",
+    unlocked: true,
+    badgeText: "+20 XP"
+  },
+  {
+    id: "cheat_meal_balance",
+    title: "Cheat Meal Balance",
+    description: "Log a cheat meal without breaking your discipline or calorie buffer",
+    icon: "Sparkles",
+    unlocked: false,
+    badgeText: "+15 XP"
+  }
+];

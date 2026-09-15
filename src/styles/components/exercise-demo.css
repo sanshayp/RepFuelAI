@@ -1,0 +1,576 @@
+/* ==========================================================================
+   Exercise Demo Visualizer & Biomechanics Display
+   Scoped specifically to Exercise Demonstration feature
+   ========================================================================== */
+
+.exercise-demo-container {
+  background: var(--bg-primary-solid, #09141b);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+  border-radius: var(--radius-xl, 24px);
+  padding: var(--space-6, 1.5rem);
+  margin-bottom: var(--space-8, 2rem);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-normal, 0.3s ease);
+}
+
+.exercise-demo-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4, 1rem);
+  margin-bottom: var(--space-5, 1.25rem);
+  padding-bottom: var(--space-4, 1rem);
+  border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08));
+}
+
+.exercise-demo-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.exercise-demo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--volt-green, #00f59b);
+  background: var(--volt-green-subtle, rgba(0, 245, 155, 0.12));
+  border: 1px solid var(--volt-green-border, rgba(0, 245, 155, 0.28));
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full, 9999px);
+  width: fit-content;
+}
+
+.exercise-demo-title {
+  font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+  font-weight: 800;
+  color: var(--text-primary, #ffffff);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.exercise-demo-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #9ba5a8);
+}
+
+.exercise-demo-quick-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+}
+
+.demo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.28rem 0.7rem;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--color-slate, #293643);
+  color: var(--color-gray-light, #cdd0cf);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.demo-chip.highlight {
+  background: rgba(75, 110, 135, 0.2);
+  border-color: var(--accent-primary, #4b6e87);
+  color: #e3f2fd;
+}
+
+/* Mode Switch Toolbar */
+.demo-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3, 0.75rem);
+  background: rgba(21, 33, 45, 0.6);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-lg, 18px);
+  padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+  margin-bottom: var(--space-5, 1.25rem);
+}
+
+.demo-mode-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.demo-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary, #9ba5a8);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-md, 12px);
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.demo-mode-btn:hover {
+  color: var(--text-primary, #ffffff);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.demo-mode-btn.active {
+  background: var(--color-slate, #293643);
+  border-color: var(--accent-primary, #4b6e87);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.demo-playback-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+}
+
+.demo-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: var(--color-slate, #293643);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary, #ffffff);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.38rem 0.75rem;
+  border-radius: var(--radius-md, 12px);
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.demo-action-btn:hover {
+  background: var(--accent-primary, #4b6e87);
+  border-color: var(--accent-primary-hover, #5f849f);
+  color: #ffffff;
+}
+
+/* Visualization Viewport Area */
+.demo-stage-viewport {
+  position: relative;
+  background: radial-gradient(circle at center, #15212d 0%, #09141b 100%);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  border-radius: var(--radius-lg, 18px);
+  padding: var(--space-4, 1rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 340px;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6);
+  margin-bottom: var(--space-5, 1.25rem);
+  overflow: hidden;
+}
+
+.demo-stage-viewport::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+/* Status Indicator Pill over Stage */
+.demo-stage-indicator {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(9, 20, 27, 0.85);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-full, 9999px);
+  padding: 0.35rem 0.85rem;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--text-primary, #ffffff);
+}
+
+.demo-phase-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--volt-green, #00f59b);
+  box-shadow: 0 0 8px var(--volt-green, #00f59b);
+  animation: pulse-dot 1.5s infinite alternate ease-in-out;
+}
+
+.demo-phase-dot.movement {
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+}
+
+.demo-phase-dot.end {
+  background: #a855f7;
+  box-shadow: 0 0 8px #a855f7;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.85); opacity: 0.7; }
+  100% { transform: scale(1.2); opacity: 1; }
+}
+
+.demo-stage-timeline {
+  position: absolute;
+  bottom: 12px;
+  left: 20px;
+  right: 20px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.demo-progress-bar-track {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-full, 9999px);
+  overflow: hidden;
+  position: relative;
+}
+
+.demo-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--volt-green, #00f59b), #38bdf8 50%, #a855f7 100%);
+  border-radius: var(--radius-full, 9999px);
+  transition: width 0.1s linear;
+}
+
+.demo-timeline-markers {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted, #7e8b9b);
+  letter-spacing: 0.05em;
+}
+
+.demo-timeline-marker.active {
+  color: var(--volt-green, #00f59b);
+}
+
+/* SVG Rendering Canvas */
+.demo-svg-canvas {
+  width: 100%;
+  max-width: 680px;
+  height: auto;
+  max-height: 320px;
+  display: block;
+  z-index: 2;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4));
+}
+
+/* Split Comparison Layout (Side-by-Side Starting vs Ending) */
+.demo-split-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-4, 1rem);
+  width: 100%;
+  max-width: 720px;
+  z-index: 2;
+}
+
+.demo-split-card {
+  background: rgba(9, 20, 27, 0.7);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+  border-radius: var(--radius-md, 12px);
+  padding: var(--space-3, 0.75rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: border-color var(--transition-fast, 0.2s ease);
+}
+
+.demo-split-card:hover {
+  border-color: var(--accent-primary, #4b6e87);
+}
+
+.demo-split-card-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-2, 0.5rem);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm, 8px);
+}
+
+.demo-split-card-title.start {
+  color: var(--volt-green, #00f59b);
+  background: var(--volt-green-subtle, rgba(0, 245, 155, 0.12));
+}
+
+.demo-split-card-title.end {
+  color: #c084fc;
+  background: rgba(168, 85, 247, 0.14);
+}
+
+.demo-split-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-primary, #4b6e87);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-split-arrow {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(75, 110, 135, 0.18);
+  border: 1px solid var(--accent-primary, #4b6e87);
+  display: grid;
+  place-items: center;
+  color: #38bdf8;
+  animation: pulse-arrow 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse-arrow {
+  0% { transform: scale(0.95); }
+  50% { transform: scale(1.08); box-shadow: 0 0 14px rgba(56, 189, 248, 0.35); }
+  100% { transform: scale(0.95); }
+}
+
+/* 3-Pillar Form Breakdown (Starting Position, Movement, Ending Position) */
+.demo-breakdown-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3, 0.75rem);
+  margin-bottom: var(--space-4, 1rem);
+}
+
+.demo-pillar-card {
+  background: var(--bg-secondary, rgba(21, 33, 45, 0.88));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-lg, 18px);
+  padding: var(--space-4, 1rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5rem);
+  position: relative;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.demo-pillar-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.demo-pillar-card.active {
+  border-color: var(--accent-primary, #4b6e87);
+  box-shadow: 0 4px 16px rgba(75, 110, 135, 0.2);
+}
+
+.demo-pillar-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-sm, 8px);
+  width: fit-content;
+}
+
+.pillar-start .demo-pillar-badge {
+  color: var(--volt-green, #00f59b);
+  background: var(--volt-green-subtle, rgba(0, 245, 155, 0.12));
+  border: 1px solid var(--volt-green-border, rgba(0, 245, 155, 0.28));
+}
+
+.pillar-movement .demo-pillar-badge {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+}
+
+.pillar-end .demo-pillar-badge {
+  color: #c084fc;
+  background: rgba(168, 85, 247, 0.12);
+  border: 1px solid rgba(168, 85, 247, 0.28);
+}
+
+.demo-pillar-title {
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--text-primary, #ffffff);
+  margin: 0;
+}
+
+.demo-pillar-desc {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-secondary, #9ba5a8);
+  margin: 0;
+  flex: 1;
+}
+
+.demo-cues-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-2, 0.5rem) 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.demo-cue-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 0.74rem;
+  color: var(--color-gray-light, #cdd0cf);
+  line-height: 1.4;
+}
+
+.demo-cue-item svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Key Bio Cues Bar */
+.demo-biomechanics-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3, 0.75rem);
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-md, 12px);
+  padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+  font-size: 0.78rem;
+  color: var(--text-secondary, #9ba5a8);
+}
+
+.demo-bio-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.demo-bio-item strong {
+  color: var(--text-primary, #ffffff);
+  font-weight: 700;
+}
+
+/* Interactive Exercise Row Enhancements in WorkoutDetails */
+.exercise-row-card.interactive {
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.exercise-row-card.interactive:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-primary, #4b6e87);
+  background: rgba(41, 54, 67, 0.6);
+}
+
+.exercise-row-card.is-active-demo {
+  border-color: var(--volt-green, #00f59b);
+  background: rgba(0, 245, 155, 0.06);
+  box-shadow: 0 0 16px rgba(0, 245, 155, 0.15);
+}
+
+.exercise-row-card.is-active-demo .exercise-index {
+  background: var(--volt-green, #00f59b);
+  color: #09141b;
+  border-color: var(--volt-green, #00f59b);
+  font-weight: 800;
+}
+
+.btn-inspect-demo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--color-slate, #293643);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  color: var(--text-primary, #ffffff);
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 0.32rem 0.65rem;
+  border-radius: var(--radius-full, 9999px);
+  transition: all var(--transition-fast, 0.2s ease);
+  margin-top: 4px;
+}
+
+.exercise-row-card.is-active-demo .btn-inspect-demo {
+  background: var(--volt-green, #00f59b);
+  color: #09141b;
+  border-color: transparent;
+  font-weight: 800;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .exercise-demo-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .demo-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .demo-mode-tabs {
+    justify-content: flex-start;
+  }
+
+  .demo-split-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3, 0.75rem);
+  }
+
+  .demo-split-divider {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .demo-breakdown-pillars {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-stage-viewport {
+    min-height: 290px;
+  }
+}
