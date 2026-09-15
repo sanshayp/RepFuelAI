@@ -1,20 +1,20 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Flame, 
-  AlertTriangle, 
   CheckCircle2, 
-  Sparkles, 
   Edit3, 
-  ArrowRight, 
-  RefreshCw, 
-  SlidersHorizontal,
-  Info
+  RefreshCw,
+  Sliders,
+  X
 } from 'lucide-react';
 import { useNutritionProgress } from '../../context/NutritionProgressContext';
 import { CalorieRing } from '../Common/CalorieRing';
-import { getSavedProfile } from '../../utils/profileUtils';
+import { MacroRing } from '../Common/MacroRing';
 import { getCompensationOptions } from '../../utils/nutritionUtils';
+import { safeGetStorage, safeSetStorage } from '../../utils/storageUtils';
 import '../../styles/components/calorie-tracker.css';
+
+const CUSTOM_MACROS_STORAGE_KEY = 'repfuel_custom_macro_goals_v2';
 
 export const CalorieTracker = () => {
   const {
@@ -23,24 +23,52 @@ export const CalorieTracker = () => {
     mealBreakdown,
     dailyTotals,
     dailyRemaining,
-    macroGoals,
     isOverDaily,
     overDailyBy,
     baseMealTargets,
-    effectiveMealTargets,
     mealCompensations,
     applyMealCompensation,
     resetMealCompensation,
   } = useNutritionProgress();
 
+  // Calorie target editing state
   const [isEditingTarget, setIsEditingTarget] = useState(false);
   const [tempTarget, setTempTarget] = useState(dailyCalorieTarget);
-  const [selectedOptionId, setSelectedOptionId] = useState('');
+
+  // Custom macro goals state
+  const [customMacroGoals, setCustomMacroGoals] = useState(() => {
+    return safeGetStorage(CUSTOM_MACROS_STORAGE_KEY, null);
+  });
+  const [isEditingMacros, setIsEditingMacros] = useState(false);
+  const [tempMacroGoals, setTempMacroGoals] = useState({
+    protein: '',
+    carbs: '',
+    fats: '',
+  });
+
+  // Meal compensation state
   const [activeOverMealKey, setActiveOverMealKey] = useState(null);
-  const [compensationSuccessMsg, setCompensationSuccessMsg] = useState('');
-  const savedProfile = getSavedProfile();
-  const maintenanceCalories = savedProfile.bmr ? Math.round(savedProfile.bmr * 1.2) : null;
-  const goalAdjustment = maintenanceCalories ? dailyCalorieTarget - maintenanceCalories : null;
+  const [compensationFeedback, setCompensationFeedback] = useState('');
+
+  // 1. Calculate dynamic calorie-based macro goals:
+  // Protein: 30% of calories / 4 kcal/g
+  // Carbs: 40% of calories / 4 kcal/g
+  // Fat: 30% of calories / 9 kcal/g
+  const calorieBasedMacroGoals = useMemo(() => {
+    return {
+      protein: Math.round((dailyCalorieTarget * 0.30) / 4),
+      carbs: Math.round((dailyCalorieTarget * 0.40) / 4),
+      fats: Math.round((dailyCalorieTarget * 0.30) / 9),
+    };
+  }, [dailyCalorieTarget]);
+
+  // Active macro goals (custom if user saved them, else calorie-based automatic)
+  const activeMacroGoals = useMemo(() => {
+    if (customMacroGoals && customMacroGoals.protein && customMacroGoals.carbs && customMacroGoals.fats) {
+      return customMacroGoals;
+    }
+    return calorieBasedMacroGoals;
+  }, [customMacroGoals, calorieBasedMacroGoals]);
 
   const handleTargetSubmit = (e) => {
     e.preventDefault();
@@ -53,18 +81,40 @@ export const CalorieTracker = () => {
     setIsEditingTarget(false);
   };
 
-  const consumedPercent = dailyCalorieTarget > 0 
-    ? Math.min(100, Math.round((dailyTotals.calories / dailyCalorieTarget) * 100))
-    : 0;
+  const handleOpenMacroEdit = () => {
+    setTempMacroGoals({
+      protein: activeMacroGoals.protein,
+      carbs: activeMacroGoals.carbs,
+      fats: activeMacroGoals.fats,
+    });
+    setIsEditingMacros(true);
+  };
+
+  const handleSaveCustomMacros = (e) => {
+    e.preventDefault();
+    const p = Math.max(10, Number(tempMacroGoals.protein) || calorieBasedMacroGoals.protein);
+    const c = Math.max(10, Number(tempMacroGoals.carbs) || calorieBasedMacroGoals.carbs);
+    const f = Math.max(5, Number(tempMacroGoals.fats) || calorieBasedMacroGoals.fats);
+    const updated = { protein: p, carbs: c, fats: f };
+    setCustomMacroGoals(updated);
+    safeSetStorage(CUSTOM_MACROS_STORAGE_KEY, updated);
+    setIsEditingMacros(false);
+  };
+
+  const handleResetToCalorieBasedMacros = () => {
+    setCustomMacroGoals(null);
+    safeSetStorage(CUSTOM_MACROS_STORAGE_KEY, null);
+    setIsEditingMacros(false);
+  };
 
   const mealEntries = [
-    { key: 'breakfast', label: 'Breakfast', ratio: '25%' },
-    { key: 'lunch', label: 'Lunch', ratio: '35%' },
-    { key: 'dinner', label: 'Dinner', ratio: '30%' },
-    { key: 'snacks', label: 'Snacks', ratio: '10%' },
+    { key: 'breakfast', label: 'Breakfast' },
+    { key: 'lunch', label: 'Lunch' },
+    { key: 'dinner', label: 'Dinner' },
+    { key: 'snacks', label: 'Snacks' },
   ];
 
-  // Detect which meal is over target and needs compensation
+  // Detect meals over target that can be compensated
   const overMeals = useMemo(() => {
     return mealEntries.filter(({ key }) => {
       const mealData = mealBreakdown[key];
@@ -72,12 +122,10 @@ export const CalorieTracker = () => {
     });
   }, [mealBreakdown]);
 
-  // Set the primary over meal to inspect
   const currentOverMeal = activeOverMealKey 
     ? overMeals.find((m) => m.key === activeOverMealKey) || overMeals[0]
     : overMeals[0];
 
-  // Compensation options for the current over-limit meal
   const compensationOptions = useMemo(() => {
     if (!currentOverMeal) return [];
     const mealData = mealBreakdown[currentOverMeal.key];
@@ -88,429 +136,295 @@ export const CalorieTracker = () => {
     );
   }, [currentOverMeal, mealBreakdown, baseMealTargets]);
 
-  const handleApplyCompensation = (option) => {
-    if (!option) return;
-    if (option.id === 'keep_current') {
-      setCompensationSuccessMsg('Kept current allocation plan without reductions.');
+  const handleApplyCompensationOption = (opt) => {
+    if (!opt) return;
+    if (opt.id === 'keep_current') {
+      setCompensationFeedback('Kept current allocation plan without reductions.');
     } else {
-      applyMealCompensation(option.adjustments);
-      setCompensationSuccessMsg(`Dynamic compensation applied! Remaining meal targets redistributed.`);
+      applyMealCompensation(opt.adjustments);
+      const updatedList = Object.entries(opt.adjustments).map(([mKey, adj]) => {
+        const capitalMeal = mKey.charAt(0).toUpperCase() + mKey.slice(1);
+        const newTarget = (baseMealTargets[mKey] || 0) + adj;
+        return `${capitalMeal}: ${newTarget} kcal`;
+      }).join(', ');
+      setCompensationFeedback(`Allocations updated (${updatedList})`);
     }
-    setTimeout(() => setCompensationSuccessMsg(''), 4000);
+    setTimeout(() => setCompensationFeedback(''), 5000);
   };
 
   const hasActiveCompensations = Object.keys(mealCompensations).length > 0;
 
   return (
-    <section className="calorie-tracker-section" aria-label="Calorie and Nutrition Overview">
-      {/* 1. Daily Overview Hero Card with Circular Calorie Ring */}
-      <div className="calorie-hero-card">
-        <div className="calorie-hero-top">
-          <div className="calorie-hero-title-wrap">
-            <div className="calorie-hero-icon" aria-hidden="true">
-              <Flame size={24} />
-            </div>
-            <div>
-              <h2>Daily Calorie &amp; Macro Target</h2>
-              <p>Dynamic metabolic fuel breakdown scaled to your training intensity</p>
-            </div>
+    <section className="calorie-tracker-section" aria-label="Calorie and Macro Summary">
+      <div className="calorie-summary-card">
+        {/* Header with Title & Controls */}
+        <div className="calorie-summary-header">
+          <div className="calorie-header-title-wrap">
+            <Flame className="calorie-header-flame" size={20} />
+            <h2>Today&apos;s Calories</h2>
           </div>
 
-          {/* User-Configurable Daily Calorie Target */}
-          <div className="calorie-target-editor">
-            <label htmlFor="daily-target-input">Daily Budget:</label>
-            {isEditingTarget ? (
-              <form onSubmit={handleTargetSubmit} className="calorie-target-input-wrap">
-                <input
-                  id="daily-target-input"
-                  type="number"
-                  min="800"
-                  max="6000"
-                  step="50"
-                  className="calorie-target-input"
-                  value={tempTarget}
-                  onChange={(e) => setTempTarget(e.target.value)}
-                  autoFocus
-                  onBlur={handleTargetSubmit}
-                />
-                <span className="calorie-unit">kcal</span>
-              </form>
-            ) : (
-              <div 
-                className="calorie-target-input-wrap"
-                style={{ cursor: 'pointer' }}
-                onClick={() => {
-                  setTempTarget(dailyCalorieTarget);
-                  setIsEditingTarget(true);
-                }}
-                title="Click to edit daily calorie budget"
-              >
-                <span className="metric-number" style={{ fontSize: '1.2rem', fontWeight: 800 }}>
-                  {dailyCalorieTarget.toLocaleString()}
-                </span>
-                <span className="calorie-unit">kcal</span>
-                <Edit3 size={14} style={{ opacity: 0.7, marginLeft: 4 }} />
-              </div>
-            )}
+          <div className="calorie-header-actions">
+            {/* Macro Goals Customization Trigger */}
+            <button
+              type="button"
+              className="macro-goals-edit-btn"
+              onClick={handleOpenMacroEdit}
+              title="Customize macro goals"
+            >
+              <Sliders size={13} />
+              <span>Edit Goals</span>
+            </button>
+
+            {/* Daily Calorie Goal Editor */}
+            <div className="calorie-goal-edit-wrap">
+              {isEditingTarget ? (
+                <form onSubmit={handleTargetSubmit} className="calorie-edit-form">
+                  <input
+                    type="number"
+                    min="800"
+                    max="6000"
+                    step="50"
+                    value={tempTarget}
+                    onChange={(e) => setTempTarget(e.target.value)}
+                    autoFocus
+                    onBlur={handleTargetSubmit}
+                    className="calorie-target-inline-input"
+                  />
+                  <span className="calorie-target-unit">kcal goal</span>
+                </form>
+              ) : (
+                <button
+                  type="button"
+                  className="calorie-goal-display-btn"
+                  onClick={() => {
+                    setTempTarget(dailyCalorieTarget);
+                    setIsEditingTarget(true);
+                  }}
+                  title="Click to edit daily calorie goal"
+                >
+                  <span>{dailyCalorieTarget.toLocaleString()} kcal goal</span>
+                  <Edit3 size={13} className="calorie-edit-icon" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-        {savedProfile.bmr && (
-          <div className="goal-summary-banner" role="status">
-              <div>
-              <span className="goal-summary-label">{savedProfile.goal === 'gain' ? 'Weight gain plan' : savedProfile.goal === 'maintain' ? 'Weight maintenance plan' : 'Weight loss plan'}</span>
-              <strong>{dailyCalorieTarget.toLocaleString()} kcal daily target</strong>
-            </div>
-            <span>
-              {goalAdjustment === 0 ? 'At estimated maintenance' : `${Math.abs(goalAdjustment).toLocaleString()} kcal ${goalAdjustment > 0 ? 'surplus' : 'deficit'} from estimated maintenance`}
-            </span>
-          </div>
-        )}
-
-        {/* Dynamic Alerts Banner */}
-        {isOverDaily ? (
-          <div className="calorie-alert-banner warning" role="alert">
-            <AlertTriangle className="calorie-alert-icon" size={20} />
-            <div className="calorie-alert-content">
-              <h4>Daily Calorie Target Exceeded</h4>
-              <p>
-                You have consumed <strong>{dailyTotals.calories.toLocaleString()} kcal</strong> ({overDailyBy.toLocaleString()} kcal over your {dailyCalorieTarget.toLocaleString()} kcal target).
-                Use smart meal compensation below to redistribute upcoming portions.
-              </p>
-            </div>
-          </div>
-        ) : dailyTotals.calories > 0 && dailyRemaining <= 200 ? (
-          <div className="calorie-alert-banner success" role="status">
-            <CheckCircle2 className="calorie-alert-icon" size={20} />
-            <div className="calorie-alert-content">
-              <h4>Calorie Target Almost Achieved</h4>
-              <p>
-                You have <strong>{dailyRemaining} kcal remaining</strong>. Great precision fueling today!
-              </p>
-            </div>
-          </div>
-        ) : null}
-
-        {/* Visual Calorie Ring & Core Metrics Grid */}
-        <div className="calorie-hero-main-layout">
-          {/* Calorie Progress Ring */}
-          <div className="calorie-ring-hero-box">
+        {/* ==================================================== */}
+        {/* 1. FOUR PROGRESS RINGS IN ONE HORIZONTAL ROW ON DESKTOP */}
+        {/* Order: 1. Calories (Large), 2. Protein, 3. Carbs, 4. Fat */}
+        {/* ==================================================== */}
+        <div className="four-rings-row" role="group" aria-label="Today's Nutrition Rings">
+          {/* 1. Large Calories Ring */}
+          <div className="ring-column calories-col">
             <CalorieRing
               consumed={dailyTotals.calories}
               target={dailyCalorieTarget}
               size="standard"
-              showRemaining={true}
+              showRemaining={false}
+            />
+            <span className="ring-item-label calories-label">Calories</span>
+          </div>
+
+          {/* 2, 3, 4: Three Small Macro Rings horizontally aligned to the right */}
+          <div className="macro-rings-group">
+            {/* 2. Protein Ring */}
+            <MacroRing
+              label="Protein"
+              consumed={dailyTotals.protein}
+              goal={activeMacroGoals.protein}
+              unit="g"
+              size={96}
+            />
+
+            {/* 3. Carbs Ring */}
+            <MacroRing
+              label="Carbs"
+              consumed={dailyTotals.carbs}
+              goal={activeMacroGoals.carbs}
+              unit="g"
+              size={96}
+            />
+
+            {/* 4. Fat Ring */}
+            <MacroRing
+              label="Fat"
+              consumed={dailyTotals.fats}
+              goal={activeMacroGoals.fats}
+              unit="g"
+              size={96}
             />
           </div>
-
-          {/* 3-Column Metrics Column */}
-          <div className="calorie-metrics-grid">
-            <div className="metric-box consumed">
-              <span className="metric-label">Consumed</span>
-              <div className="metric-value-wrap">
-                <span className="metric-number">{dailyTotals.calories.toLocaleString()}</span>
-                <span className="metric-unit">kcal</span>
-              </div>
-              <span className="metric-subtext">
-                {consumedPercent}% of daily budget
-              </span>
-            </div>
-
-            <div className="metric-box target">
-              <span className="metric-label">Daily Target</span>
-              <div className="metric-value-wrap">
-                <span className="metric-number">{dailyCalorieTarget.toLocaleString()}</span>
-                <span className="metric-unit">kcal</span>
-              </div>
-              <span className="metric-subtext">Configurable metabolic goal</span>
-            </div>
-
-            <div className={`metric-box ${isOverDaily ? 'over-target' : 'remaining'}`}>
-              <span className="metric-label">{isOverDaily ? 'Over Target' : 'Remaining'}</span>
-              <div className="metric-value-wrap">
-                <span className="metric-number" style={{ color: isOverDaily ? '#EF4444' : 'var(--volt-green)' }}>
-                  {isOverDaily ? `+${overDailyBy.toLocaleString()}` : dailyRemaining.toLocaleString()}
-                </span>
-                <span className="metric-unit">kcal</span>
-              </div>
-              <span className="metric-subtext">
-                {isOverDaily ? 'Exceeded daily limit' : 'Left for upcoming meals'}
-              </span>
-            </div>
-          </div>
         </div>
 
-        {/* Macronutrient Tracking Grid */}
-        <div className="macros-card-grid">
-          {/* Protein */}
-          <div className="macro-card">
-            <div className="macro-header">
-              <span className="macro-name">
-                <span className="macro-dot protein" />
-                Protein
-              </span>
-              <span className="macro-goal-text">Goal: {macroGoals.protein}g</span>
-            </div>
-            <div className="macro-value">{dailyTotals.protein}g</div>
-            <div className="macro-track">
-              <div 
-                className="macro-fill protein"
-                style={{ width: `${Math.min(100, Math.round((dailyTotals.protein / macroGoals.protein) * 100))}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Carbs */}
-          <div className="macro-card">
-            <div className="macro-header">
-              <span className="macro-name">
-                <span className="macro-dot carbs" />
-                Carbohydrates
-              </span>
-              <span className="macro-goal-text">Goal: {macroGoals.carbs}g</span>
-            </div>
-            <div className="macro-value">{dailyTotals.carbs}g</div>
-            <div className="macro-track">
-              <div 
-                className="macro-fill carbs"
-                style={{ width: `${Math.min(100, Math.round((dailyTotals.carbs / macroGoals.carbs) * 100))}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Fats */}
-          <div className="macro-card">
-            <div className="macro-header">
-              <span className="macro-name">
-                <span className="macro-dot fats" />
-                Fats
-              </span>
-              <span className="macro-goal-text">Goal: {macroGoals.fats}g</span>
-            </div>
-            <div className="macro-value">{dailyTotals.fats}g</div>
-            <div className="macro-track">
-              <div 
-                className="macro-fill fats"
-                style={{ width: `${Math.min(100, Math.round((dailyTotals.fats / macroGoals.fats) * 100))}%` }}
-              />
-            </div>
-          </div>
+        {/* Calorie Goal & Remaining Stats directly below rings */}
+        <div className="calorie-stats-summary-line">
+          <span className="calorie-stat-item goal">
+            {dailyCalorieTarget.toLocaleString()} kcal goal
+          </span>
+          <span className="calorie-stat-divider">&bull;</span>
+          <span className={`calorie-stat-item ${isOverDaily ? 'over' : 'remaining'}`}>
+            {isOverDaily 
+              ? `${overDailyBy.toLocaleString()} kcal over` 
+              : `${dailyRemaining.toLocaleString()} kcal remaining`}
+          </span>
         </div>
 
-        {/* ==================================================== */}
-        {/* 2. SMART MEAL CALORIE COMPENSATION SECTION */}
-        {/* ==================================================== */}
-        {currentOverMeal && (
-          <div className="smart-compensation-card" role="region" aria-label="Smart Meal Calorie Compensation">
-            <div className="compensation-header">
-              <div className="compensation-badge">
-                <SlidersHorizontal size={14} />
-                <span>SMART MEAL CALORIE COMPENSATION</span>
-              </div>
-              <span className="compensation-status-pill">
-                Active Redistribution Engine
-              </span>
-            </div>
-
-            <div className="compensation-alert-banner">
-              <AlertTriangle size={18} style={{ color: '#F59E0B', flexShrink: 0 }} />
-              <div className="compensation-alert-text">
-                <strong>{currentOverMeal.label} is {mealBreakdown[currentOverMeal.key].overBy} kcal over its target.</strong>
-                <p>
-                  Allocated: {mealBreakdown[currentOverMeal.key].baseTarget} kcal &bull; Consumed: {mealBreakdown[currentOverMeal.key].calories} kcal.
-                  Choose a strategy below to redistribute remaining calories across upcoming meals.
-                </p>
-              </div>
-            </div>
-
-            {/* Over Meal Switcher if multiple meals are exceeded */}
-            {overMeals.length > 1 && (
-              <div className="over-meal-tabs">
-                <span>Select meal to balance:</span>
-                {overMeals.map((m) => (
-                  <button
-                    key={m.key}
-                    type="button"
-                    className={`over-meal-tab ${currentOverMeal.key === m.key ? 'active' : ''}`}
-                    onClick={() => {
-                      setActiveOverMealKey(m.key);
-                      setSelectedOptionId('');
-                    }}
-                  >
-                    {m.label} (+{mealBreakdown[m.key].overBy} kcal)
-                  </button>
-                ))}
-              </div>
-            )}
-
-            <div className="compensation-form">
-              <h4 className="compensation-prompt-title">
-                How would you like to adjust your remaining meals?
-              </h4>
-
-              <div className="compensation-options-list">
-                {compensationOptions.map((opt) => {
-                  const isSelected = selectedOptionId === opt.id;
-                  return (
-                    <label 
-                      key={opt.id} 
-                      className={`compensation-option-item ${isSelected ? 'selected' : ''}`}
-                    >
-                      <input
-                        type="radio"
-                        name="compensation-strategy"
-                        value={opt.id}
-                        checked={isSelected}
-                        onChange={() => setSelectedOptionId(opt.id)}
-                        className="compensation-radio"
-                      />
-                      <div className="compensation-option-content">
-                        <div className="compensation-option-label-line">
-                          <span className="compensation-option-title">{opt.label}</span>
-                          {opt.id !== 'keep_current' && (
-                            <span className="compensation-tag">Auto-Calculated</span>
-                          )}
-                        </div>
-                        <span className="compensation-option-desc">{opt.description}</span>
-                      </div>
-                    </label>
-                  );
-                })}
-              </div>
-
-              <div className="compensation-actions-bar">
+        {/* Optional Custom Macro Goals Edit Modal */}
+        {isEditingMacros && (
+          <div 
+            className="macro-edit-modal-backdrop" 
+            onClick={() => setIsEditingMacros(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Edit Macro Goals"
+          >
+            <div className="macro-edit-modal-card" onClick={(e) => e.stopPropagation()}>
+              <div className="macro-edit-header">
+                <div>
+                  <h3 className="macro-edit-title">Macro Goals</h3>
+                  <p className="macro-edit-sub">
+                    Default derived from {dailyCalorieTarget.toLocaleString()} kcal (30% P / 40% C / 30% F)
+                  </p>
+                </div>
                 <button
                   type="button"
-                  className="apply-compensation-btn"
-                  disabled={!selectedOptionId}
-                  onClick={() => {
-                    const opt = compensationOptions.find((o) => o.id === selectedOptionId);
-                    handleApplyCompensation(opt);
-                  }}
+                  className="macro-edit-close-btn"
+                  onClick={() => setIsEditingMacros(false)}
+                  aria-label="Close"
                 >
-                  Apply Redistribution
+                  <X size={18} />
                 </button>
-
-                {hasActiveCompensations && (
-                  <button
-                    type="button"
-                    className="reset-compensation-btn"
-                    onClick={() => {
-                      resetMealCompensation();
-                      setSelectedOptionId('');
-                      setCompensationSuccessMsg('Reset all meal allocations to standard baseline.');
-                      setTimeout(() => setCompensationSuccessMsg(''), 4000);
-                    }}
-                  >
-                    <RefreshCw size={14} /> Reset to Standard Allocations
-                  </button>
-                )}
               </div>
 
-              {compensationSuccessMsg && (
-                <div className="compensation-success-toast">
-                  <CheckCircle2 size={16} />
-                  <span>{compensationSuccessMsg}</span>
+              <form onSubmit={handleSaveCustomMacros} className="macro-edit-form">
+                <div className="macro-edit-field">
+                  <label htmlFor="macro-input-protein">Protein goal</label>
+                  <div className="macro-input-group">
+                    <input
+                      id="macro-input-protein"
+                      type="number"
+                      min="10"
+                      max="600"
+                      value={tempMacroGoals.protein}
+                      onChange={(e) => setTempMacroGoals((prev) => ({ ...prev, protein: e.target.value }))}
+                      required
+                    />
+                    <span className="macro-input-unit">g</span>
+                  </div>
                 </div>
-              )}
+
+                <div className="macro-edit-field">
+                  <label htmlFor="macro-input-carbs">Carbs goal</label>
+                  <div className="macro-input-group">
+                    <input
+                      id="macro-input-carbs"
+                      type="number"
+                      min="10"
+                      max="800"
+                      value={tempMacroGoals.carbs}
+                      onChange={(e) => setTempMacroGoals((prev) => ({ ...prev, carbs: e.target.value }))}
+                      required
+                    />
+                    <span className="macro-input-unit">g</span>
+                  </div>
+                </div>
+
+                <div className="macro-edit-field">
+                  <label htmlFor="macro-input-fat">Fat goal</label>
+                  <div className="macro-input-group">
+                    <input
+                      id="macro-input-fat"
+                      type="number"
+                      min="5"
+                      max="400"
+                      value={tempMacroGoals.fats}
+                      onChange={(e) => setTempMacroGoals((prev) => ({ ...prev, fats: e.target.value }))}
+                      required
+                    />
+                    <span className="macro-input-unit">g</span>
+                  </div>
+                </div>
+
+                <div className="macro-edit-actions">
+                  <button type="submit" className="macro-save-btn">
+                    Save Goals
+                  </button>
+                  <button
+                    type="button"
+                    className="macro-reset-btn"
+                    onClick={handleResetToCalorieBasedMacros}
+                  >
+                    Use Calorie-Based Goals
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}
 
-        {/* Compensation Banner when active adjustments exist but no meal is currently over */}
-        {!currentOverMeal && hasActiveCompensations && (
-          <div className="active-compensation-summary-banner">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Sparkles size={16} style={{ color: 'var(--volt-green)' }} />
-              <span>
-                <strong>Smart Meal Compensation Active:</strong> Remaining meal targets are currently adjusted to keep your daily target balanced.
+        {/* Simple Calorie Compensation Section (Functional & Clean) */}
+        {currentOverMeal && (
+          <div className="simple-compensation-box" role="region" aria-label="Meal Calorie Compensation">
+            <div className="simple-comp-top">
+              <span className="simple-comp-meal-name">{currentOverMeal.label}</span>
+              <span className="simple-comp-meal-stats">
+                {mealBreakdown[currentOverMeal.key].calories} / {mealBreakdown[currentOverMeal.key].baseTarget} kcal
               </span>
             </div>
+            
+            <div className="simple-comp-over-badge">
+              {mealBreakdown[currentOverMeal.key].overBy} kcal over
+            </div>
+
+            <p className="simple-comp-prompt">Adjust remaining meals?</p>
+
+            <div className="simple-comp-actions-list">
+              {compensationOptions.map((opt) => {
+                let buttonLabel = opt.label;
+                if (opt.id.startsWith('split_')) {
+                  buttonLabel = 'Split';
+                } else if (opt.id === 'keep_current') {
+                  buttonLabel = 'Keep As Is';
+                }
+
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    className="simple-comp-btn"
+                    onClick={() => handleApplyCompensationOption(opt)}
+                  >
+                    {buttonLabel}
+                  </button>
+                );
+              })}
+            </div>
+
+            {compensationFeedback && (
+              <div className="simple-comp-feedback-msg">
+                <CheckCircle2 size={14} />
+                <span>{compensationFeedback}</span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Active compensation status pill if compensation applied and no meal currently over */}
+        {!currentOverMeal && hasActiveCompensations && (
+          <div className="simple-comp-active-banner">
+            <span>Remaining meals adjusted for balance.</span>
             <button
               type="button"
-              className="reset-compensation-btn"
+              className="simple-comp-reset-link"
               onClick={resetMealCompensation}
             >
-              <RefreshCw size={13} /> Reset Allocations
+              <RefreshCw size={12} />
+              <span>Reset</span>
             </button>
           </div>
         )}
-
-        {/* 3. Meal-by-Meal Calorie Allocation Breakdown Cards */}
-        <div className="meal-allocation-grid">
-          {mealEntries.map(({ key, label, ratio }) => {
-            const mealData = mealBreakdown[key] || { 
-              calories: 0, 
-              baseTarget: 0, 
-              target: 0, 
-              isOver: false, 
-              overBy: 0, 
-              percent: 0,
-              adjustment: 0
-            };
-            const hasAdjustment = mealData.adjustment !== 0;
-
-            return (
-              <div 
-                key={key} 
-                className={`meal-alloc-card ${mealData.isOver ? 'is-over' : ''} ${hasAdjustment ? 'is-compensated' : ''}`}
-              >
-                <div className="meal-alloc-header">
-                  <div>
-                    <span className="meal-alloc-name">{label}</span>
-                    {hasAdjustment && (
-                      <span className="meal-comp-indicator">
-                        {mealData.adjustment > 0 ? `+${mealData.adjustment}` : `${mealData.adjustment}`} kcal adjusted
-                      </span>
-                    )}
-                  </div>
-                  <span className={`meal-alloc-badge ${mealData.isOver ? 'over' : 'normal'}`}>
-                    {mealData.isOver ? `+${mealData.overBy} kcal over` : ratio}
-                  </span>
-                </div>
-
-                <div className="meal-alloc-cals">
-                  <span className="meal-alloc-num">{mealData.calories}</span>
-                  <span className="meal-alloc-target">
-                    / {mealData.target} kcal {hasAdjustment && <small title="Base allocation">({mealData.baseTarget})</small>}
-                  </span>
-                </div>
-
-                <div className="meal-alloc-track">
-                  <div 
-                    className={`meal-alloc-fill ${mealData.isOver ? 'over' : ''}`}
-                    style={{ width: `${mealData.percent}%` }}
-                  />
-                </div>
-
-                {mealData.isOver ? (
-                  <div className="meal-alloc-over-actions">
-                    <span className="meal-alloc-over-note">
-                      ⚠ Target exceeded by {mealData.overBy} kcal
-                    </span>
-                    <button
-                      type="button"
-                      className="inline-rebalance-btn"
-                      onClick={() => setActiveOverMealKey(key)}
-                    >
-                      Compensate &rarr;
-                    </button>
-                  </div>
-                ) : hasAdjustment ? (
-                  <span className="meal-alloc-adjusted-note">
-                    ✓ Reduced by {Math.abs(mealData.adjustment)} kcal for daily balance
-                  </span>
-                ) : (
-                  <span className="meal-alloc-normal-note">
-                    {mealData.target - mealData.calories > 0 
-                      ? `${mealData.target - mealData.calories} kcal remaining`
-                      : 'Meal target filled'}
-                  </span>
-                )}
-              </div>
-            );
-          })}
-        </div>
       </div>
     </section>
   );

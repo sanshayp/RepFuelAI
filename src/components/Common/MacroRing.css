@@ -1,0 +1,88 @@
+/* RepFuelAI Macro Ring Component Styles */
+
+.macro-ring-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  transition: transform var(--transition-fast, 0.2s ease);
+}
+
+.macro-ring-item:hover {
+  transform: translateY(-2px);
+}
+
+.macro-ring-svg-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.macro-ring-svg {
+  transform: rotate(0deg);
+  transition: all var(--transition-normal, 0.3s ease);
+}
+
+.macro-ring-track {
+  transition: stroke 0.3s ease;
+}
+
+.macro-ring-fill {
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.macro-ring-center-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+  width: 80%;
+  line-height: 1.15;
+}
+
+.macro-ring-consumed {
+  font-family: var(--font-heading, sans-serif);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text-primary, #FFFFFF);
+  line-height: 1;
+}
+
+.macro-ring-unit {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted, #94A3B8);
+  margin-top: 1px;
+}
+
+.macro-ring-goal {
+  font-size: 0.72rem;
+  color: var(--text-secondary, #CBD5E1);
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+.macro-ring-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary, #CBD5E1);
+  letter-spacing: 0.02em;
+}
+
+.macro-ring-item.is-over .macro-ring-consumed {
+  color: #EF4444;
+}
+
+.macro-ring-item.is-over .macro-ring-label {
+  color: #F87171;
+}
