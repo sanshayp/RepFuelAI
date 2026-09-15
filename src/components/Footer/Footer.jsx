@@ -46,9 +46,6 @@ export const Footer = ({
           <p className="footer-copyright">
             © {currentYear} {brandName}. All rights reserved. Precision Fitness Engineering.
           </p>
-          <div className="footer-bottom-badge">
-            <span>Powered by AI Overload Protocols</span>
-          </div>
         </div>
       </div>
     </footer>

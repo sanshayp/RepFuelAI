@@ -166,20 +166,9 @@ export const homePageContent = {
     tagline: "The premier AI-driven ecosystem for athletic performance, progressive resistance, and metabolic fueling.",
     columns: [
       {
-        title: "Platform",
-        links: [
-          { label: "Training Styles", href: "/training-styles" },
-          { label: "BMI Check", href: "/bmi" },
-          { label: "Nutrition & Fueling", href: "/#nutrition" },
-          { label: "Why RepFuel", href: "/#about" }
-        ]
-      },
-      {
         title: "Company",
         links: [
           { label: "About RepFuelAI", href: "#about" },
-          { label: "Science & Methodology", href: "/science" },
-          { label: "Careers", href: "/careers" },
           { label: "Press & Media", href: "/press" },
           { label: "Contact Us", href: "/contact" }
         ]
