@@ -4,6 +4,7 @@ import { calculateMealTargets, getCompensationOptions } from '../utils/nutrition
 import { calculateLevelInfo, calculateDailyScore, XP_RULES } from '../utils/progressUtils';
 import { defaultWeeklyHistory, defaultCalendarDays, initialAchievements } from '../data/progressSampleData';
 import { getNutritionForServing, indianFoods } from '../data/indianFoodsData';
+import { calculateGoalCalories, getSavedProfile } from '../utils/profileUtils';
 
 const NutritionProgressContext = createContext(null);
 
@@ -22,138 +23,67 @@ const STORAGE_KEYS = {
 };
 
 export const NutritionProgressProvider = ({ children }) => {
+  const savedProfile = getSavedProfile();
+  const hasProfile = Boolean(savedProfile.bmr);
+
   // 1. Daily Calorie Target
   const [dailyCalorieTarget, setDailyCalorieTargetState] = useState(() => {
-    return safeGetStorage(STORAGE_KEYS.CALORIE_TARGET, 2400);
+    if (!hasProfile) return 2400;
+    return safeGetStorage(
+      STORAGE_KEYS.CALORIE_TARGET,
+      savedProfile.bmr ? calculateGoalCalories(savedProfile.bmr, savedProfile.goal) : 2400
+    );
   });
 
   // 2. Step Count Tracking
   const [stepCount, setStepCountState] = useState(() => {
-    return safeGetStorage(STORAGE_KEYS.STEP_COUNT, 8450);
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.STEP_COUNT, 0) : 0;
   });
 
   const [stepGoal, setStepGoalState] = useState(() => {
-    return safeGetStorage(STORAGE_KEYS.STEP_GOAL, 10000);
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.STEP_GOAL, 10000) : 10000;
   });
 
   // 3. Logged Foods list
   const [loggedFoods, setLoggedFoods] = useState(() => {
-    return safeGetStorage(STORAGE_KEYS.LOGGED_FOODS, [
-      {
-        logId: 101,
-        foodId: 1,
-        name: "Poha (Flattened Rice)",
-        category: "Breakfast",
-        serving: "1 medium bowl (150g)",
-        quantity: 1,
-        unit: "bowl",
-        calories: 210,
-        protein: 4,
-        carbs: 42,
-        fats: 3,
-        meal: "breakfast",
-        isCheatMeal: false,
-        timestamp: "08:30 AM"
-      },
-      {
-        logId: 102,
-        foodId: 73,
-        name: "Boiled Whole Egg",
-        category: "Eggs & Poultry",
-        serving: "1 large egg (50g)",
-        quantity: 2,
-        unit: "egg",
-        calories: 150,
-        protein: 12.6,
-        carbs: 1.2,
-        fats: 10,
-        meal: "breakfast",
-        isCheatMeal: false,
-        timestamp: "08:45 AM"
-      },
-      {
-        logId: 103,
-        foodId: 22,
-        name: "Roti / Phulka (Whole Wheat, No Ghee)",
-        category: "Indian Breads",
-        serving: "1 medium roti (35g)",
-        quantity: 2,
-        unit: "roti",
-        calories: 170,
-        protein: 6,
-        carbs: 34,
-        fats: 1,
-        meal: "lunch",
-        isCheatMeal: false,
-        timestamp: "01:15 PM"
-      },
-      {
-        logId: 104,
-        foodId: 45,
-        name: "Yellow Dal Tadka",
-        category: "Dal & Legumes",
-        serving: "1 katori / bowl (150g)",
-        quantity: 1,
-        unit: "bowl",
-        calories: 155,
-        protein: 8,
-        carbs: 22,
-        fats: 4,
-        meal: "lunch",
-        isCheatMeal: false,
-        timestamp: "01:25 PM"
-      },
-      {
-        logId: 105,
-        foodId: 84,
-        name: "Fresh Paneer (Raw Cubes)",
-        category: "Dairy & Paneer",
-        serving: "100g raw paneer",
-        quantity: 100,
-        unit: "gram",
-        calories: 265,
-        protein: 18.5,
-        carbs: 4.5,
-        fats: 20,
-        meal: "dinner",
-        isCheatMeal: false,
-        timestamp: "08:00 PM"
-      }
-    ]);
+    if (!hasProfile) return [];
+    const savedFoods = safeGetStorage(STORAGE_KEYS.LOGGED_FOODS, []);
+    const seededLogIds = new Set([101, 102, 103, 104, 105]);
+    return savedFoods.filter((item) => !seededLogIds.has(item.logId));
   });
 
   // 4. Meal Compensation Adjustments (Redistributions when a meal is over target)
   // Format: { lunch: -100, dinner: -100 }
   const [mealCompensations, setMealCompensations] = useState(() => {
-    return safeGetStorage(STORAGE_KEYS.MEAL_COMPENSATIONS, {});
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.MEAL_COMPENSATIONS, {}) : {};
   });
 
   // 5. Today's Workout Completion status
   const [todayWorkoutDone, setTodayWorkoutDoneState] = useState(() => {
-    return safeGetStorage(STORAGE_KEYS.WORKOUT_DONE, true);
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.WORKOUT_DONE, false) : false;
   });
 
   // 6. Calendar Days (30 Days of September 2026)
   const [calendarDays, setCalendarDays] = useState(() => {
-    return safeGetStorage(STORAGE_KEYS.CALENDAR_DAYS, defaultCalendarDays);
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.CALENDAR_DAYS, []) : [];
   });
 
   // 7. Weekly History data
   const [weeklyHistory, setWeeklyHistory] = useState(() => {
-    return safeGetStorage(STORAGE_KEYS.WEEKLY_HISTORY, defaultWeeklyHistory);
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.WEEKLY_HISTORY, []) : [];
   });
 
   // 8. Gamification (XP, Streak, Achievements)
   const [totalXp, setTotalXp] = useState(() => {
-    return safeGetStorage(STORAGE_KEYS.TOTAL_XP, 850);
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.TOTAL_XP, 0) : 0;
   });
 
   const [streak, setStreak] = useState(() => {
-    return safeGetStorage(STORAGE_KEYS.STREAK, 6);
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.STREAK, 0) : 0;
   });
 
   const [achievements, setAchievements] = useState(() => {
-    return safeGetStorage(STORAGE_KEYS.ACHIEVEMENTS, initialAchievements);
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.ACHIEVEMENTS, []) : [];
   });
 
   // Persist State to LocalStorage
@@ -508,6 +438,11 @@ export const NutritionProgressProvider = ({ children }) => {
     setLoggedFoods((prev) => prev.filter((item) => item.logId !== logId));
   };
 
+  // Action: Clear all user-logged foods
+  const clearLoggedFoods = () => {
+    setLoggedFoods([]);
+  };
+
   // Action: Clear entire meal
   const clearMealFoods = (meal) => {
     setLoggedFoods((prev) => prev.filter((item) => item.meal !== meal.toLowerCase()));
@@ -575,6 +510,20 @@ export const NutritionProgressProvider = ({ children }) => {
     setAchievements(initialAchievements);
   };
 
+  const clearUserData = () => {
+    setDailyCalorieTargetState(2400);
+    setStepCountState(0);
+    setStepGoalState(10000);
+    setLoggedFoods([]);
+    setMealCompensations({});
+    setTodayWorkoutDoneState(false);
+    setWeeklyHistory([]);
+    setCalendarDays([]);
+    setTotalXp(0);
+    setStreak(0);
+    setAchievements([]);
+  };
+
   const contextValue = {
     dailyCalorieTarget,
     setDailyCalorieTarget,
@@ -586,6 +535,7 @@ export const NutritionProgressProvider = ({ children }) => {
     addFoodItem,
     updateFoodItem,
     removeFoodItem,
+    clearLoggedFoods,
     clearMealFoods,
     baseMealTargets,
     effectiveMealTargets,
@@ -609,6 +559,7 @@ export const NutritionProgressProvider = ({ children }) => {
     achievements,
     levelInfo,
     resetToSampleData,
+    clearUserData,
   };
 
   return (

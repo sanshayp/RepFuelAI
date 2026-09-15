@@ -2,7 +2,7 @@
 
 .page-header-section {
   position: relative;
-  padding: calc(var(--space-24) + var(--space-8)) var(--space-6) var(--space-12);
+  padding: var(--space-12) var(--space-6) var(--space-10);
   background: var(--bg-primary);
   border-bottom: 1px solid var(--glass-border);
   overflow: hidden;
@@ -128,7 +128,7 @@
 
 @media (max-width: 768px) {
   .page-header-section {
-    padding-top: calc(var(--space-20) + var(--space-6));
+    padding-top: var(--space-8);
     padding-bottom: var(--space-8);
   }
 

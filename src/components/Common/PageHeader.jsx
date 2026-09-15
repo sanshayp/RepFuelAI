@@ -51,7 +51,7 @@ export const PageHeader = ({
             {children}
           </div>
         )}
-      </div>\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+      </div>
     </header>
   );
 };

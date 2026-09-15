@@ -16,6 +16,8 @@ import { Footer } from './components/Footer/Footer';
 import { InfoPage } from './components/Common/InfoPage';
 import { NutritionPage } from './pages/Nutrition/NutritionPage';
 import { ProgressPage } from './pages/Progress/ProgressPage';
+import { ProfilePage } from './pages/Profile/ProfilePage';
+import { hasSavedProfile } from './utils/profileUtils';
 import './App.css';
 
 /**
@@ -82,7 +84,10 @@ export function App() {
         <main className="main-content">
           <Routes>
             {/* Home Route */}
-            <Route path="/" element={<HomeLandingPage />} />
+            <Route
+              path="/"
+              element={hasSavedProfile() ? <HomeLandingPage /> : <Navigate to="/profile" replace />}
+            />
 
             {/* Dedicated Training Styles Route */}
             <Route path="/training-styles" element={<TrainingStylesPage />} />
@@ -102,6 +107,7 @@ export function App() {
             {/* Experimental Module Routes */}
             <Route path="/nutrition" element={<NutritionPage />} />
             <Route path="/progress" element={<ProgressPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
 
             <Route path="/contact" element={<InfoPage type="contact" />} />
             <Route path="/privacy" element={<InfoPage type="privacy" />} />

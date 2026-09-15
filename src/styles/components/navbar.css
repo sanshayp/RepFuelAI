@@ -116,11 +116,35 @@
   font-weight: 700;
 }
 
-/* Navbar Actions (Theme Toggle & CTA) */
+/* Navbar Actions */
 .navbar-actions {
   display: flex;
   align-items: center;
   gap: var(--space-4);
+}
+
+/* Profile Link */
+.profile-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.profile-nav-link:hover,
+.profile-nav-link:focus-visible,
+.profile-nav-link.active {
+  color: var(--accent-primary);
+}
+
+.profile-nav-link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
 }
 
 /* Theme Toggle Button */
@@ -274,5 +298,9 @@
 
   .mobile-drawer {
     display: flex;
+  }
+
+  .profile-nav-link span {
+    display: none;
   }
 }

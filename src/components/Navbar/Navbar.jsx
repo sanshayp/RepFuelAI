@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Sun, Moon, Menu, X, Flame, ChevronRight } from 'lucide-react';
+import { Sun, Moon, Menu, X, Flame, ChevronRight, UserCircle } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import '../../styles/components/navbar.css';
 
@@ -90,6 +90,17 @@ export const Navbar = ({
 
         {/* Actions: Theme Toggle + Mobile Toggle */}
         <div className="navbar-actions">
+          {/* User Profile */}
+          <Link
+            to="/profile"
+            className={`profile-nav-link ${pathname === '/profile' ? 'active' : ''}`}
+            aria-label="Open profile"
+            title="Profile"
+          >
+            <UserCircle size={20} />
+            <span>Profile</span>
+          </Link>
+
           {/* User-Controlled Theme Toggle */}
           <button 
             type="button"

@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Flame, Footprints, Award, ArrowUpRight, Edit3, Plus, Minus, Check, Sparkles } from 'lucide-react';
 import { useNutritionProgress } from '../../context/NutritionProgressContext';
 import { CalorieRing } from '../Common/CalorieRing';
+import { ProfileRequired } from '../Common/ProfileRequired';
+import { hasSavedProfile } from '../../utils/profileUtils';
 import './HomeNutritionSnapshot.css';
 
 export const HomeNutritionSnapshot = () => {
@@ -19,6 +21,10 @@ export const HomeNutritionSnapshot = () => {
     loggedFoods,
     todayWorkoutDone,
   } = useNutritionProgress();
+
+  if (!hasSavedProfile()) {
+    return <ProfileRequired feature="Nutrition and Progress" />;
+  }
 
   const [isEditingSteps, setIsEditingSteps] = useState(false);
   const [tempSteps, setTempSteps] = useState(stepCount);

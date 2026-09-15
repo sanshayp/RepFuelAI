@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useNutritionProgress } from '../../context/NutritionProgressContext';
 import { CalorieRing } from '../Common/CalorieRing';
+import { getSavedProfile } from '../../utils/profileUtils';
 import { getCompensationOptions } from '../../utils/nutritionUtils';
 import '../../styles/components/calorie-tracker.css';
 
@@ -37,6 +38,9 @@ export const CalorieTracker = () => {
   const [selectedOptionId, setSelectedOptionId] = useState('');
   const [activeOverMealKey, setActiveOverMealKey] = useState(null);
   const [compensationSuccessMsg, setCompensationSuccessMsg] = useState('');
+  const savedProfile = getSavedProfile();
+  const maintenanceCalories = savedProfile.bmr ? Math.round(savedProfile.bmr * 1.2) : null;
+  const goalAdjustment = maintenanceCalories ? dailyCalorieTarget - maintenanceCalories : null;
 
   const handleTargetSubmit = (e) => {
     e.preventDefault();
@@ -150,6 +154,18 @@ export const CalorieTracker = () => {
             )}
           </div>
         </div>
+
+        {savedProfile.bmr && (
+          <div className="goal-summary-banner" role="status">
+              <div>
+              <span className="goal-summary-label">{savedProfile.goal === 'gain' ? 'Weight gain plan' : savedProfile.goal === 'maintain' ? 'Weight maintenance plan' : 'Weight loss plan'}</span>
+              <strong>{dailyCalorieTarget.toLocaleString()} kcal daily target</strong>
+            </div>
+            <span>
+              {goalAdjustment === 0 ? 'At estimated maintenance' : `${Math.abs(goalAdjustment).toLocaleString()} kcal ${goalAdjustment > 0 ? 'surplus' : 'deficit'} from estimated maintenance`}
+            </span>
+          </div>
+        )}
 
         {/* Dynamic Alerts Banner */}
         {isOverDaily ? (
