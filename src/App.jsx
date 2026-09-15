@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { homePageContent } from './data/homePageContent';
@@ -14,11 +14,53 @@ import { TrainingStylesPage } from './components/TrainingStyles/TrainingStylesPa
 import { TipsSection } from './components/NutritionTips/TipsSection';
 import { Footer } from './components/Footer/Footer';
 import { InfoPage } from './components/Common/InfoPage';
+
+import { GoalQuiz } from './GoalQuiz';
+import { BmiHub } from './BmiHub';
+import { WorkoutTracker } from './WorkoutTracker';
+import { OnboardingModal } from './components/OnboardingModal';
+
 import './App.css';
 
 /**
+ * BmiRouteWrapper
+ * Receives default height and weight from user onboarding
+ */
+const BmiRouteWrapper = ({ userHeight, userWeight }) => {
+  const [height, setHeight] = useState(userHeight || '175');
+  const [weight, setWeight] = useState(userWeight || '77');
+
+  // Keep state updated if onboarding completes while on the page
+  useEffect(() => {
+    if (userHeight) setHeight(userHeight);
+    if (userWeight) setWeight(userWeight);
+  }, [userHeight, userWeight]);
+
+  return (
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <BMICalculator
+        badge={homePageContent.bmi.badge}
+        title={homePageContent.bmi.title}
+        subtitle={homePageContent.bmi.subtitle}
+        height={height}
+        setHeight={setHeight}
+        weight={weight}
+        setWeight={setWeight}
+      />
+      <div style={{ marginTop: '2rem' }}>
+        <BmiHub 
+          height={height} 
+          weight={weight} 
+          onHeightChange={setHeight} 
+          onWeightChange={setWeight} 
+        />
+      </div>
+    </div>
+  );
+};
+
+/**
  * HomeLandingPage
- * Composes the primary landing page featuring previews for Workouts and Training Styles.
  */
 function HomeLandingPage() {
   return (
@@ -33,6 +75,10 @@ function HomeLandingPage() {
         heroImage={homePageContent.hero.heroImage}
       />
 
+      <section style={{ maxWidth: '1200px', margin: '2rem auto', padding: '0 1rem' }}>
+        <GoalQuiz />
+      </section>
+
       <AboutIntro 
         badge={homePageContent.aboutIntro.badge}
         title={homePageContent.aboutIntro.title}
@@ -41,7 +87,6 @@ function HomeLandingPage() {
         metricsPreview={homePageContent.aboutIntro.metricsPreview}
       />
 
-      {/* Module 3: Training Styles Preview */}
       <CategoryGrid 
         badge={homePageContent.categories.badge}
         title={homePageContent.categories.title}
@@ -49,7 +94,6 @@ function HomeLandingPage() {
         items={homePageContent.categories.items}
       />
 
-      {/* Module 4: Featured Workouts Preview */}
       <FeaturedWorkouts 
         badge={homePageContent.featuredWorkouts.badge}
         title={homePageContent.featuredWorkouts.title}
@@ -57,7 +101,10 @@ function HomeLandingPage() {
         items={homePageContent.featuredWorkouts.items}
       />
 
-      {/* Module 5: Nutrition Tips */}
+      <section style={{ maxWidth: '1200px', margin: '2rem auto', padding: '0 1rem' }}>
+        <WorkoutTracker />
+      </section>
+
       <TipsSection 
         badge={homePageContent.nutritionTips.badge}
         title={homePageContent.nutritionTips.title}
@@ -69,39 +116,57 @@ function HomeLandingPage() {
 }
 
 export function App() {
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [userProfile, setUserProfile] = useState({ height: '175', weight: '77' });
+
+  useEffect(() => {
+    const savedProfile = localStorage.getItem('userFitnessProfile');
+    if (savedProfile) {
+      setUserProfile(JSON.parse(savedProfile));
+    } else {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  const handleOnboardingComplete = (data) => {
+    localStorage.setItem('onboardingCompleted', 'true');
+    localStorage.setItem('userFitnessProfile', JSON.stringify(data));
+    setUserProfile(data);
+  };
+
   return (
     <ThemeProvider>
-      {/* Scroll restoration & smooth hash scrolling on route change */}
       <ScrollToTop />
 
+      {/* Onboarding Popup Modal */}
+      <OnboardingModal 
+        isOpen={showOnboarding} 
+        onClose={() => setShowOnboarding(false)}
+        onComplete={handleOnboardingComplete}
+      />
+
       <div className="app-wrapper">
-        {/* Sticky Glass Navbar */}
         <Navbar 
           brandName={homePageContent.navbar.brandName}
           navLinks={homePageContent.navbar.navLinks}
           ctaText={homePageContent.navbar.ctaText}
           ctaLink={homePageContent.navbar.ctaLink}
+          onOpenOnboarding={() => setShowOnboarding(true)}
         />
 
         <main className="main-content">
           <Routes>
-            {/* Home Route */}
             <Route path="/" element={<HomeLandingPage />} />
-
-            {/* Dedicated Workouts Route */}
             <Route path="/workouts" element={<WorkoutsPage />} />
-
-            {/* Dedicated Training Styles Route */}
             <Route path="/training-styles" element={<TrainingStylesPage />} />
-
-            {/* Dedicated BMI Check Route */}
+            
+            {/* Passes user's questionnaire answers as defaults */}
             <Route 
               path="/bmi" 
               element={
-                <BMICalculator
-                  badge={homePageContent.bmi.badge}
-                  title={homePageContent.bmi.title}
-                  subtitle={homePageContent.bmi.subtitle}
+                <BmiRouteWrapper 
+                  userHeight={userProfile.height} 
+                  userWeight={userProfile.weight} 
                 />
               } 
             />
@@ -115,12 +180,10 @@ export function App() {
             <Route path="/press" element={<InfoPage type="press" />} />
             <Route path="/science" element={<InfoPage type="science" />} />
 
-            {/* Catch-all redirect to Home */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
 
-        {/* Global Footer */}
         <Footer 
           brandName={homePageContent.footer.brandName}
           tagline={homePageContent.footer.tagline}

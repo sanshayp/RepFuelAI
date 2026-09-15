@@ -12,10 +12,12 @@ const getBmiCategory = (bmi) => {
 export const BMICalculator = ({
   badge = 'PERSONAL METRICS',
   title = 'Check your BMI',
-  subtitle = 'Get a quick estimate from your height and weight, then use it as one signal in your broader health picture.'
+  subtitle = 'Get a quick estimate from your height and weight, then use it as one signal in your broader health picture.',
+  height,
+  setHeight,
+  weight,
+  setWeight
 }) => {
-  const [height, setHeight] = useState('');
-  const [weight, setWeight] = useState('');
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Sun, Moon, Menu, X, Flame, ArrowRight, ChevronRight } from 'lucide-react';
+import { Sun, Moon, Menu, X, Flame, ArrowRight, ChevronRight, Settings } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import '../../styles/components/navbar.css';
 
@@ -8,7 +8,8 @@ export const Navbar = ({
   brandName = "RepFuelAI", 
   navLinks = [], 
   ctaText = "Explore Workouts", 
-  ctaLink = "/workouts" 
+  ctaLink = "/workouts",
+  onOpenOnboarding
 }) => {
   const { theme, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -90,8 +91,35 @@ export const Navbar = ({
           </ul>
         </nav>
 
-        {/* Actions: Theme Toggle + CTA Button + Mobile Toggle */}
+        {/* Actions: Onboarding Button + Theme Toggle + CTA Button + Mobile Toggle */}
         <div className="navbar-actions">
+          {/* Re-open Fitness Questionnaire Button */}
+          {onOpenOnboarding && (
+            <button
+              type="button"
+              className="onboarding-reopen-btn"
+              onClick={onOpenOnboarding}
+              aria-label="Open fitness profile setup"
+              title="Update your fitness goals & metrics"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 12px',
+                borderRadius: '20px',
+                border: '1px solid #ff6b00',
+                background: 'rgba(255, 107, 0, 0.1)',
+                color: '#ff6b00',
+                cursor: 'pointer',
+                fontSize: '0.85rem',
+                fontWeight: '600'
+              }}
+            >
+              <Settings size={15} />
+              <span>Profile</span>
+            </button>
+          )}
+
           {/* User-Controlled Theme Toggle */}
           <button 
             type="button"
@@ -156,6 +184,28 @@ export const Navbar = ({
             })}
           </ul>
           <div className="mobile-drawer-footer">
+            {onOpenOnboarding && (
+              <button
+                type="button"
+                onClick={() => {
+                  closeMobileMenu();
+                  onOpenOnboarding();
+                }}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  border: '1px solid #ff6b00',
+                  background: 'rgba(255, 107, 0, 0.1)',
+                  color: '#ff6b00',
+                  fontWeight: 'bold',
+                  marginBottom: '10px',
+                  cursor: 'pointer'
+                }}
+              >
+                ⚙️ Fitness Profile Setup
+              </button>
+            )}
             <Link 
               to={ctaLink} 
               className="mobile-cta-btn"
