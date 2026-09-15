@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
-import { X, Clock, Flame, Dumbbell, Target, Layers, CheckCircle2 } from 'lucide-react';
+import { X, Clock, Flame, Dumbbell, Target, Layers, Play } from 'lucide-react';
 
 export const WorkoutDetails = ({
   workout,
-  onClose
+  onClose,
+  onStartWorkout // <-- 1. Accept the start handler prop
 }) => {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKeyDown);
-    // Prevent background scrolling when modal is active
     document.body.style.overflow = 'hidden';
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
@@ -59,6 +59,32 @@ export const WorkoutDetails = ({
         <div className="modal-hero-cover">
           <img src={image} alt={name} />
           <div className="modal-hero-overlay" />
+          
+          {/* 2. Added Floating Start Workout CTA inside Hero Cover */}
+          <button
+            type="button"
+            className="btn-start-workout-floating"
+            onClick={() => onStartWorkout(workout)}
+            style={{
+              position: 'absolute',
+              bottom: '16px',
+              right: '20px',
+              background: '#0ea5e9',
+              color: '#fff',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '8px',
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(14, 165, 233, 0.4)'
+            }}
+          >
+            <Play size={16} fill="white" />
+            Start Workout
+          </button>
         </div>
 
         <div className="modal-content-inner">

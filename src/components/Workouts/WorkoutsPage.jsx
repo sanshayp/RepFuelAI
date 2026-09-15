@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { Dumbbell, SearchX } from 'lucide-react';
+import { Dumbbell, SearchX, ArrowLeft } from 'lucide-react';
 import { PageHeader } from '../Common/PageHeader';
 import { WorkoutCategorySection } from './WorkoutCategorySection';
 import { WorkoutFilter } from './WorkoutFilter';
 import { WorkoutCard } from './WorkoutCard';
 import { WorkoutDetails } from './WorkoutDetails';
+import { WorkoutTracker } from '../../WorkoutTracker';
 import { workoutCategories, workoutsData } from '../../data/workoutsData';
 import '../../styles/components/workouts-page.css';
 
@@ -16,8 +17,9 @@ export const WorkoutsPage = () => {
   const [selectedGoal, setSelectedGoal] = useState("All");
   const [selectedEquipment, setSelectedEquipment] = useState("All");
   const [activeWorkoutDetail, setActiveWorkoutDetail] = useState(null);
+  const [activeSessionWorkout, setActiveSessionWorkout] = useState(null);
 
-  // Check if any filter is active
+  // 1. ALL HOOKS MUST STAY UP HERE (Above any conditional returns)
   const isFiltered = useMemo(() => {
     return (
       activeCategory !== "All" ||
@@ -38,40 +40,19 @@ export const WorkoutsPage = () => {
     setSelectedEquipment("All");
   };
 
-  // Filtered workouts calculation
   const filteredWorkouts = useMemo(() => {
     return workoutsData.filter((item) => {
-      // Category filter
-      if (activeCategory !== "All" && item.category !== activeCategory) {
-        return false;
-      }
+      if (activeCategory !== "All" && item.category !== activeCategory) return false;
+      if (selectedDifficulty !== "All" && item.difficulty.toLowerCase() !== selectedDifficulty.toLowerCase()) return false;
+      if (selectedDuration !== "all" && item.durationCategory !== selectedDuration) return false;
+      if (selectedGoal !== "All" && item.goal.toLowerCase() !== selectedGoal.toLowerCase()) return false;
+      if (selectedEquipment !== "All" && item.equipment.toLowerCase() !== selectedEquipment.toLowerCase()) return false;
 
-      // Difficulty filter
-      if (selectedDifficulty !== "All" && item.difficulty.toLowerCase() !== selectedDifficulty.toLowerCase()) {
-        return false;
-      }
-
-      // Duration filter
-      if (selectedDuration !== "all" && item.durationCategory !== selectedDuration) {
-        return false;
-      }
-
-      // Goal filter
-      if (selectedGoal !== "All" && item.goal.toLowerCase() !== selectedGoal.toLowerCase()) {
-        return false;
-      }
-
-      // Equipment filter
-      if (selectedEquipment !== "All" && item.equipment.toLowerCase() !== selectedEquipment.toLowerCase()) {
-        return false;
-      }
-
-      // Search query across name, description, muscles, and equipment
       if (searchQuery.trim() !== "") {
         const query = searchQuery.toLowerCase();
         const matchesName = item.name.toLowerCase().includes(query);
         const matchesDesc = item.description.toLowerCase().includes(query);
-        const matchesMuscles = item.muscles.some((m) => m.toLowerCase().includes(query));
+        const matchesMuscles = item.muscles?.some((m) => m.toLowerCase().includes(query));
         const matchesEquip = item.equipment.toLowerCase().includes(query);
         const matchesCategory = item.category.toLowerCase().includes(query);
 
@@ -79,14 +60,44 @@ export const WorkoutsPage = () => {
           return false;
         }
       }
-
       return true;
     });
   }, [activeCategory, selectedDifficulty, selectedDuration, selectedGoal, selectedEquipment, searchQuery]);
 
+  // 2. CONDITIONAL RETURNS ARE SAFE HERE AFTER ALL HOOKS HAVE BEEN CALLED
+  if (activeSessionWorkout) {
+    return (
+      <div className="workouts-page-wrapper" style={{ padding: '2rem 1rem', minHeight: '80vh' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <button
+            type="button"
+            onClick={() => setActiveSessionWorkout(null)}
+            style={{
+              background: '#27272a',
+              border: '1px solid #3f3f46',
+              color: '#fff',
+              padding: '10px 16px',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              cursor: 'pointer',
+              marginBottom: '1.5rem',
+              fontWeight: '600'
+            }}
+          >
+            <ArrowLeft size={16} />
+            Back to Workouts Catalogue
+          </button>
+
+          <WorkoutTracker activeWorkout={activeSessionWorkout} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="workouts-page-wrapper">
-      {/* Page Header */}
       <PageHeader
         badge="PRECISION PROTOCOLS"
         badgeIcon={Dumbbell}
@@ -98,14 +109,12 @@ export const WorkoutsPage = () => {
       />
 
       <div className="workouts-main-container">
-        {/* Workout Categories Quick Selection */}
         <WorkoutCategorySection
           categories={workoutCategories}
           activeCategory={activeCategory}
           onSelectCategory={(catName) => setActiveCategory(catName)}
         />
 
-        {/* Workout Filters */}
         <WorkoutFilter
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -122,7 +131,6 @@ export const WorkoutsPage = () => {
           onReset={handleResetFilters}
         />
 
-        {/* Workouts Grid */}
         <section className="workouts-grid-section" aria-label="Filtered Workouts">
           {filteredWorkouts.length > 0 ? (
             <div className="workouts-card-grid">
@@ -140,12 +148,8 @@ export const WorkoutsPage = () => {
                 <SearchX size={32} />
               </div>
               <h3>No matching workouts found</h3>
-              <p>We couldn't find any workout routines matching your current filter criteria. Try adjusting or resetting your filters.</p>
-              <button
-                type="button"
-                className="btn-view-workout"
-                onClick={handleResetFilters}
-              >
+              <p>We couldn't find any workout routines matching your current filter criteria.</p>
+              <button type="button" className="btn-view-workout" onClick={handleResetFilters}>
                 Reset All Filters
               </button>
             </div>
@@ -153,11 +157,14 @@ export const WorkoutsPage = () => {
         </section>
       </div>
 
-      {/* Workout Details Modal */}
       {activeWorkoutDetail && (
         <WorkoutDetails
           workout={activeWorkoutDetail}
           onClose={() => setActiveWorkoutDetail(null)}
+          onStartWorkout={(workoutToStart) => {
+            setActiveWorkoutDetail(null);
+            setActiveSessionWorkout(workoutToStart);
+          }}
         />
       )}
     </div>
