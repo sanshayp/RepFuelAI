@@ -19,6 +19,7 @@ import { GoalQuiz } from './GoalQuiz';
 import { BmiHub } from './BmiHub';
 import { WorkoutTracker } from './WorkoutTracker';
 import { OnboardingModal } from './components/OnboardingModal';
+import { WaterTracker } from './components/WaterTracker';
 
 import './App.css';
 
@@ -63,6 +64,8 @@ const BmiRouteWrapper = ({ userHeight, userWeight }) => {
  * HomeLandingPage
  */
 function HomeLandingPage() {
+  const [isWaterTrackerOpen, setIsWaterTrackerOpen] = useState(false);
+  
   return (
     <>
       <Hero 
@@ -76,7 +79,7 @@ function HomeLandingPage() {
       />
 
       <section style={{ maxWidth: '1200px', margin: '2rem auto', padding: '0 1rem' }}>
-        <GoalQuiz />
+        <WaterTracker />
       </section>
 
       <AboutIntro 
@@ -111,6 +114,58 @@ function HomeLandingPage() {
         subtitle={homePageContent.nutritionTips.subtitle}
         items={homePageContent.nutritionTips.items}
       />
+
+      {/* FLOATING WATER GLASS BUTTON & POPUP (Home Page Only) */}
+      <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 998 }}>
+        {!isWaterTrackerOpen ? (
+          <button
+            onClick={() => setIsWaterTrackerOpen(true)}
+            style={{
+              background: '#0ea5e9',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '50px',
+              padding: '12px 20px',
+              display: 'flex',
+              alignItem: 'center',
+              gap: '8px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 20px rgba(14, 165, 233, 0.4)',
+              fontWeight: 'bold',
+              fontSize: '0.95rem',
+              transition: 'transform 0.2s'
+            }}
+            title="Open Water Tracker"
+          >
+            🥛 Drink Water
+          </button>
+        ) : (
+          <div style={{ position: 'relative' }}>
+            {/* Close popup cross button */}
+            <button
+              onClick={() => setIsWaterTrackerOpen(false)}
+              style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                background: 'transparent',
+                border: 'none',
+                color: '#a1a1aa',
+                cursor: 'pointer',
+                zIndex: 999,
+                fontSize: '1rem',
+                fontWeight: 'bold'
+              }}
+            >
+              ✕
+            </button>
+            <WaterTracker />
+          </div>
+        )}
+      </div>
+
+
+
     </>
   );
 }
