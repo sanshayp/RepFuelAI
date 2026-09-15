@@ -87,8 +87,6 @@ export function App() {
         <Navbar 
           brandName={homePageContent.navbar.brandName}
           navLinks={homePageContent.navbar.navLinks}
-          ctaText={homePageContent.navbar.ctaText}
-          ctaLink={homePageContent.navbar.ctaLink}
         />
 
         <main className="main-content">

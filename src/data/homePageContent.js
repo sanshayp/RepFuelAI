@@ -8,16 +8,13 @@ export const homePageContent = {
     brandName: "RepFuelAI",
     tagline: "Precision Performance",
     navLinks: [
-      { label: "Home", href: "/" },
       { label: "Workouts", href: "/workouts" },
       { label: "Training Styles", href: "/training-styles" },
       { label: "BMI Check", href: "/bmi" },
       { label: "Nutrition", href: "/nutrition" },
       { label: "Progress", href: "/progress" },
       { label: "Why RepFuel", href: "/#about" },
-    ],
-    ctaText: "Explore Workouts",
-    ctaLink: "/workouts"
+    ]
   },
 
   hero: {

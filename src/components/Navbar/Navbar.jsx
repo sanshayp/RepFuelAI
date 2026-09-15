@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Sun, Moon, Menu, X, Flame, ArrowRight, ChevronRight } from 'lucide-react';
+import { Sun, Moon, Menu, X, Flame, ChevronRight } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import '../../styles/components/navbar.css';
 
 export const Navbar = ({ 
   brandName = "RepFuelAI", 
-  navLinks = [], 
-  ctaText = "Explore Workouts", 
-  ctaLink = "/workouts" 
+  navLinks = []
 }) => {
   const { theme, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -90,7 +88,7 @@ export const Navbar = ({
           </ul>
         </nav>
 
-        {/* Actions: Theme Toggle + CTA Button + Mobile Toggle */}
+        {/* Actions: Theme Toggle + Mobile Toggle */}
         <div className="navbar-actions">
           {/* User-Controlled Theme Toggle */}
           <button 
@@ -102,12 +100,6 @@ export const Navbar = ({
           >
             {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
           </button>
-
-          {/* Primary Action Button */}
-          <Link to={ctaLink} className="navbar-cta-btn">
-            <span>{ctaText}</span>
-            <ArrowRight size={16} />
-          </Link>
 
           {/* Mobile Hamburger Toggle Button */}
           <button 
@@ -155,15 +147,6 @@ export const Navbar = ({
               );
             })}
           </ul>
-          <div className="mobile-drawer-footer">
-            <Link 
-              to={ctaLink} 
-              className="mobile-cta-btn"
-              onClick={closeMobileMenu}
-            >
-              {ctaText}
-            </Link>
-          </div>
         </div>
       )}
     </header>
