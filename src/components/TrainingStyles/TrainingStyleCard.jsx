@@ -24,6 +24,7 @@ const getStyleIcon = (iconName) => {
 
 export const TrainingStyleCard = ({
   style,
+  onAbout,
   onExplore
 }) => {
   const {
@@ -34,6 +35,14 @@ export const TrainingStyleCard = ({
     difficulty,
     tag
   } = style;
+
+  const handleAction = () => {
+    if (onAbout) {
+      onAbout(style);
+    } else if (onExplore) {
+      onExplore(style);
+    }
+  };
 
   const getDifficultyClass = (diff) => {
     switch (diff?.toLowerCase()) {
@@ -74,16 +83,16 @@ export const TrainingStyleCard = ({
         </div>
       </div>
 
-      {/* Footer & Explore CTA */}
+      {/* Footer & About CTA */}
       <div className="style-card-footer">
         <span className="style-tag-badge">{tag}</span>
         <button
           type="button"
           className="btn-explore-style"
-          onClick={() => onExplore(style)}
-          aria-label={`Explore ${name} training style methodology`}
+          onClick={handleAction}
+          aria-label={`About ${name}`}
         >
-          <span>Explore Style</span>
+          <span>About</span>
           <ArrowRight size={15} />
         </button>
       </div>

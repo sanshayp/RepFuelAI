@@ -87,6 +87,7 @@ export const TrainingStylesPage = () => {
                 <TrainingStyleCard
                   key={style.id}
                   style={style}
+                  onAbout={(s) => setActiveStyleDetail(s)}
                   onExplore={(s) => setActiveStyleDetail(s)}
                 />
               ))}
