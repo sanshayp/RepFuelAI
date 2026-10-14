@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ShieldCheck } from 'lucide-react';
 import { GoogleLogin } from '../../GoogleLogin';
 import { PageHeader } from '../../components/Common/PageHeader';
+import { isFirebaseConfigured } from '../../firebase';
 import './profile-page.css';
 
 export const SignInPage = ({ authError = '' }) => {
@@ -30,7 +31,12 @@ export const SignInPage = ({ authError = '' }) => {
           <h2 id="auth-heading">Continue to RepFuelAI</h2>
           <p>Any Google account can sign in. Your profile and tracking data continue to be stored in this browser.</p>
           {authError && <p className="profile-error" role="alert">{authError}</p>}
-          <GoogleLogin onLoginSuccess={handleLoginSuccess} />
+          {!isFirebaseConfigured && (
+            <p className="profile-error" role="alert">
+              Firebase is not configured. Copy <code>.env.example</code> to <code>.env.local</code> and add your Firebase values.
+            </p>
+          )}
+          <GoogleLogin onLoginSuccess={handleLoginSuccess} disabled={!isFirebaseConfigured} />
         </section>
       </main>
     </div>

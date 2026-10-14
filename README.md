@@ -124,9 +124,10 @@ Google sign-in requires a Firebase project:
 
 1. In the Firebase Console, create a web app and enable **Google** under **Authentication → Sign-in method**.
 2. Add `localhost` and your deployed hostname under **Authentication → Settings → Authorized domains**.
-3. Update the Firebase web app settings in `src/firebase.js` if you use a different Firebase project.
+3. Copy `.env.example` to `.env.local` and set `VITE_FIREBASE_API_KEY` and `VITE_FIREBASE_APP_ID` to the values for your Firebase web app.
+4. Restart the Vite development server after updating `.env.local`.
 
-Unauthenticated visitors see the sign-in page at `/` (also available at `/sign-in`). Returning signed-in users continue to the app. Analytics is not initialized because it is not required for authentication.
+Unauthenticated visitors see the sign-in page at `/` (also available at `/sign-in`). Returning signed-in users continue to the app. `.env.local` is ignored by Git. Analytics is not initialized because it is not required for authentication.
 
 ### Development Server
 

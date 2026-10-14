@@ -7,6 +7,11 @@ export const GoogleLogin = ({ onLoginSuccess, disabled = false }) => {
   const [isSigningIn, setIsSigningIn] = useState(false);
 
   const handleLogin = async () => {
+    if (!auth) {
+      setError('Firebase is not configured. Add the Firebase values to your local .env.local file.');
+      return;
+    }
+
     setError('');
     setIsSigningIn(true);
     try {

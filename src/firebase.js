@@ -2,14 +2,15 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBjklAyo83ttPUvnm3pRISjzU_XP6w-X_I',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: 'repfuelai.firebaseapp.com',
   projectId: 'repfuelai',
   storageBucket: 'repfuelai.firebasestorage.app',
   messagingSenderId: '1081469794965',
-  appId: '1:1081469794965:web:2d61ed52ebd462ca78799c',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+export const isFirebaseConfigured = Boolean(firebaseConfig.apiKey && firebaseConfig.appId);
+const app = isFirebaseConfigured ? initializeApp(firebaseConfig) : null;
 
-export const auth = getAuth(app);
+export const auth = app ? getAuth(app) : null;

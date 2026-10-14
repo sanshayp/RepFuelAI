@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { ThemeProvider } from './context/ThemeContext';
 import { NutritionProgressProvider } from './context/NutritionProgressContext';
-import { auth } from './firebase';
+import { auth, isFirebaseConfigured } from './firebase';
 import { homePageContent } from './data/homePageContent';
 import { ScrollToTop } from './components/Common/ScrollToTop';
 import { Navbar } from './components/Navbar/Navbar';
@@ -73,11 +73,18 @@ function HomeLandingPage() {
 function DefaultRoute() {
   const [authState, setAuthState] = useState({ isLoading: true, user: null, error: '' });
 
-  useEffect(() => onAuthStateChanged(
-    auth,
-    (user) => setAuthState({ isLoading: false, user, error: '' }),
-    (error) => setAuthState({ isLoading: false, user: null, error: error.message })
-  ), []);
+  useEffect(() => {
+    if (!auth) {
+      setAuthState({ isLoading: false, user: null, error: '' });
+      return undefined;
+    }
+
+    return onAuthStateChanged(
+      auth,
+      (user) => setAuthState({ isLoading: false, user, error: '' }),
+      (error) => setAuthState({ isLoading: false, user: null, error: error.message })
+    );
+  }, []);
 
   if (authState.isLoading) {
     return <div className="auth-loading" role="status">Checking your sign-in status…</div>;
