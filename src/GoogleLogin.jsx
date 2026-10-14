@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { browserLocalPersistence, GoogleAuthProvider, setPersistence, signInWithPopup } from 'firebase/auth';
 import { auth } from './firebase';
 
 export const GoogleLogin = ({ onLoginSuccess, disabled = false }) => {
@@ -16,6 +16,7 @@ export const GoogleLogin = ({ onLoginSuccess, disabled = false }) => {
     setIsSigningIn(true);
     try {
       const provider = new GoogleAuthProvider();
+      await setPersistence(auth, browserLocalPersistence);
       const result = await signInWithPopup(auth, provider);
       onLoginSuccess(result.user);
     } catch (loginError) {

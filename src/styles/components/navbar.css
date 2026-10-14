@@ -147,6 +147,34 @@
   border-radius: var(--radius-sm);
 }
 
+.auth-sign-out {
+  max-width: 180px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.auth-sign-out span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.auth-sign-out:hover {
+  color: var(--accent-primary);
+}
+
+.navbar-auth-error {
+  margin: 0;
+  padding: 0.5rem var(--space-6);
+  background: var(--glass-card);
+  color: var(--danger-color, #ff6b6b);
+  text-align: center;
+  font-size: 0.85rem;
+}
+
 /* Theme Toggle Button */
 .theme-toggle-btn {
   display: flex;

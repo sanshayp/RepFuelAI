@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Sun, Moon, Menu, X, Flame, ChevronRight, UserCircle, LogIn } from 'lucide-react';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { Sun, Moon, Menu, X, Flame, ChevronRight, UserCircle, LogIn, LogOut } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
+import { auth } from '../../firebase';
 import '../../styles/components/navbar.css';
 
 export const Navbar = ({ 
@@ -11,6 +13,8 @@ export const Navbar = ({
   const { theme, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [authActionError, setAuthActionError] = useState('');
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -26,8 +30,24 @@ export const Navbar = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (!auth) return undefined;
+    return onAuthStateChanged(auth, setUser, (error) => {
+      setAuthActionError(error.message || 'Could not check your sign-in status.');
+    });
+  }, []);
+
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
+  };
+
+  const handleSignOut = async () => {
+    setAuthActionError('');
+    try {
+      await signOut(auth);
+    } catch (error) {
+      setAuthActionError(error.message || 'Could not sign out. Please try again.');
+    }
   };
 
   const isLinkActive = (href) => {
@@ -101,15 +121,28 @@ export const Navbar = ({
             <span>Profile</span>
           </Link>
 
-          <Link
-            to="/sign-in"
-            className={`profile-nav-link ${pathname === '/sign-in' ? 'active' : ''}`}
-            onClick={closeMobileMenu}
-            aria-label="Sign in with Google"
-          >
-            <LogIn size={19} aria-hidden="true" />
-            <span>Sign in</span>
-          </Link>
+          {user ? (
+            <button
+              type="button"
+              className="profile-nav-link auth-sign-out"
+              onClick={handleSignOut}
+              aria-label={`Sign out${user.displayName ? `, ${user.displayName}` : ''}`}
+              title={user.displayName || 'Signed in'}
+            >
+              <LogOut size={19} aria-hidden="true" />
+              <span>{user.displayName || 'Signed in'}</span>
+            </button>
+          ) : (
+            <Link
+              to="/sign-in"
+              className={`profile-nav-link ${pathname === '/sign-in' ? 'active' : ''}`}
+              onClick={closeMobileMenu}
+              aria-label="Sign in with Google"
+            >
+              <LogIn size={19} aria-hidden="true" />
+              <span>Sign in</span>
+            </Link>
+          )}
 
           {/* User-Controlled Theme Toggle */}
           <button 
@@ -134,6 +167,7 @@ export const Navbar = ({
           </button>
         </div>
       </div>
+      {authActionError && <p className="navbar-auth-error" role="alert">{authActionError}</p>}
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="mobile-drawer" role="dialog" aria-modal="true">
