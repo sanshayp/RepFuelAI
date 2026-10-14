@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Sun, Moon, Menu, X, Flame, ChevronRight, UserCircle } from 'lucide-react';
+import { Sun, Moon, Menu, X, Flame, ChevronRight, UserCircle, LogIn } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import '../../styles/components/navbar.css';
 
@@ -101,6 +101,16 @@ export const Navbar = ({
             <span>Profile</span>
           </Link>
 
+          <Link
+            to="/sign-in"
+            className={`profile-nav-link ${pathname === '/sign-in' ? 'active' : ''}`}
+            onClick={closeMobileMenu}
+            aria-label="Sign in with Google"
+          >
+            <LogIn size={19} aria-hidden="true" />
+            <span>Sign in</span>
+          </Link>
+
           {/* User-Controlled Theme Toggle */}
           <button 
             type="button"
@@ -124,7 +134,6 @@ export const Navbar = ({
           </button>
         </div>
       </div>
-
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="mobile-drawer" role="dialog" aria-modal="true">

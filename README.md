@@ -118,6 +118,16 @@ Clone the repository and install the dependencies:
 npm install
 ```
 
+### Firebase Google Sign-In
+
+Google sign-in requires a Firebase project:
+
+1. In the Firebase Console, create a web app and enable **Google** under **Authentication → Sign-in method**.
+2. Add `localhost` and your deployed hostname under **Authentication → Settings → Authorized domains**.
+3. Update the Firebase web app settings in `src/firebase.js` if you use a different Firebase project.
+
+Unauthenticated visitors see the sign-in page at `/` (also available at `/sign-in`). Returning signed-in users continue to the app. Analytics is not initialized because it is not required for authentication.
+
 ### Development Server
 
 Start the local Vite development server:
@@ -152,6 +162,7 @@ npm run preview
 | `/workouts` | **Workouts** | Dedicated workouts hub with category selector, multi-parameter filters (difficulty, duration, goal, equipment), search, and granular exercise detail modals. |
 | `/training-styles` | **Training Styles** | Educational hub covering 8 athletic training disciplines, methodology comparisons, advantages, and sample sessions. |
 | `/bmi` | **BMI Check** | Dedicated metric health calculator with immediate score categorization and guidance. |
+| `/sign-in` | **Sign In** | Sign in with a Google account through Firebase Authentication. |
 
 ---
 

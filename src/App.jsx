@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { onAuthStateChanged } from 'firebase/auth';
 import { ThemeProvider } from './context/ThemeContext';
 import { NutritionProgressProvider } from './context/NutritionProgressContext';
+import { auth } from './firebase';
 import { homePageContent } from './data/homePageContent';
 import { ScrollToTop } from './components/Common/ScrollToTop';
 import { Navbar } from './components/Navbar/Navbar';
@@ -17,6 +19,7 @@ import { InfoPage } from './components/Common/InfoPage';
 import { NutritionPage } from './pages/Nutrition/NutritionPage';
 import { ProgressPage } from './pages/Progress/ProgressPage';
 import { ProfilePage } from './pages/Profile/ProfilePage';
+import { SignInPage } from './pages/Profile/SignInPage';
 import { hasSavedProfile } from './utils/profileUtils';
 import './App.css';
 
@@ -67,6 +70,26 @@ function HomeLandingPage() {
   );
 }
 
+function DefaultRoute() {
+  const [authState, setAuthState] = useState({ isLoading: true, user: null, error: '' });
+
+  useEffect(() => onAuthStateChanged(
+    auth,
+    (user) => setAuthState({ isLoading: false, user, error: '' }),
+    (error) => setAuthState({ isLoading: false, user: null, error: error.message })
+  ), []);
+
+  if (authState.isLoading) {
+    return <div className="auth-loading" role="status">Checking your sign-in status…</div>;
+  }
+
+  if (!authState.user) {
+    return <SignInPage authError={authState.error} />;
+  }
+
+  return hasSavedProfile() ? <HomeLandingPage /> : <Navigate to="/profile" replace />;
+}
+
 export function App() {
   return (
     <ThemeProvider>
@@ -84,10 +107,7 @@ export function App() {
         <main className="main-content">
           <Routes>
             {/* Home Route */}
-            <Route
-              path="/"
-              element={hasSavedProfile() ? <HomeLandingPage /> : <Navigate to="/profile" replace />}
-            />
+            <Route path="/" element={<DefaultRoute />} />
 
             {/* Dedicated Training Styles Route */}
             <Route path="/training-styles" element={<TrainingStylesPage />} />
@@ -108,6 +128,7 @@ export function App() {
             <Route path="/nutrition" element={<NutritionPage />} />
             <Route path="/progress" element={<ProgressPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/sign-in" element={<SignInPage />} />
 
             <Route path="/contact" element={<InfoPage type="contact" />} />
             <Route path="/privacy" element={<InfoPage type="privacy" />} />
