@@ -25,8 +25,9 @@ import './App.css';
 
 /**
  * HomeLandingPage
- * Composes the primary landing page featuring training styles and nutrition guidance.
+ * Composes thbhbe primary landing page featuring training styles and nutrition guidance.
  */
+
 function HomeLandingPage() {
   return (
     <>
