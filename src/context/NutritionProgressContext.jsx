@@ -3,7 +3,6 @@ import { safeGetStorage, safeSetStorage } from '../utils/storageUtils';
 import { calculateMealTargets, getCompensationOptions } from '../utils/nutritionUtils';
 import { calculateLevelInfo, calculateDailyScore, XP_RULES } from '../utils/progressUtils';
 import { defaultWeeklyHistory, defaultCalendarDays, initialAchievements } from '../data/progressSampleData';
-import { getNutritionForServing, indianFoods } from '../data/indianFoodsData';
 import { calculateGoalCalories, getSavedProfile } from '../utils/profileUtils';
 
 const NutritionProgressContext = createContext(null);
@@ -355,28 +354,68 @@ export const NutritionProgressProvider = ({ children }) => {
   // ACTIONS
   // ==========================================
 
-  // Action: Add Food Item
-  const addFoodItem = (meal, food, quantity = 1, unit = null, isCheatMeal = false) => {
-    const qty = Math.max(0.01, Number(quantity) || 1);
-    const selectedUnit = unit || food.defaultUnit || 'serving';
-    const nutrients = getNutritionForServing(food, qty, selectedUnit);
+  // Action: Add Food Item (supports confirmed Gemini estimate or legacy food object)
+  const addFoodItem = (entryOrMeal, food, quantity = 1, unit = null, isCheatMeal = false) => {
+    let newLogItem;
 
-    const newLogItem = {
-      logId: Date.now() + Math.random(),
-      foodId: food.id,
-      name: food.name,
-      category: food.category,
-      serving: food.serving,
-      quantity: qty,
-      unit: selectedUnit,
-      calories: nutrients.calories,
-      protein: nutrients.protein,
-      carbs: nutrients.carbs,
-      fats: nutrients.fats,
-      meal: meal.toLowerCase(),
-      isCheatMeal: Boolean(isCheatMeal),
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
+    if (entryOrMeal && typeof entryOrMeal === 'object' && (entryOrMeal.name || entryOrMeal.foodName)) {
+      // Confirmed nutrition entry from Gemini AI
+      const entry = entryOrMeal;
+      const entryName = entry.name || entry.foodName;
+      const qty = Math.max(0.01, Number(entry.quantity) || 1);
+      const cals = Math.round(Number(entry.calories) || 0);
+      const p = Number((Number(entry.protein) || 0).toFixed(1));
+      const c = Number((Number(entry.carbs) || 0).toFixed(1));
+      const f = Number((Number(entry.fats ?? entry.fat) || 0).toFixed(1));
+      const fib = Number((Number(entry.fiber) || 0).toFixed(1));
+
+      newLogItem = {
+        logId: Date.now() + Math.random(),
+        name: entryName,
+        category: entry.category || 'AI Estimated',
+        quantity: qty,
+        unit: entry.unit || 'g',
+        calories: cals,
+        protein: p,
+        carbs: c,
+        fats: f,
+        fat: f,
+        fiber: fib,
+        meal: (entry.meal || 'snacks').toLowerCase(),
+        isCheatMeal: Boolean(entry.isCheatMeal),
+        assumptions: Array.isArray(entry.assumptions) ? entry.assumptions : [],
+        preparation: entry.preparation || '',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+    } else {
+      // Legacy argument signature
+      const meal = String(entryOrMeal || 'snacks');
+      const qty = Math.max(0.01, Number(quantity) || 1);
+      const selectedUnit = unit || food?.defaultUnit || 'serving';
+      const cals = food?.calories ? Math.round(food.calories * qty) : 0;
+      const p = food?.protein ? Number((food.protein * qty).toFixed(1)) : 0;
+      const c = food?.carbs ? Number((food.carbs * qty).toFixed(1)) : 0;
+      const f = food?.fats ? Number((food.fats * qty).toFixed(1)) : 0;
+
+      newLogItem = {
+        logId: Date.now() + Math.random(),
+        foodId: food?.id,
+        name: food?.name || 'Food item',
+        category: food?.category || 'General',
+        serving: food?.serving,
+        quantity: qty,
+        unit: selectedUnit,
+        calories: cals,
+        protein: p,
+        carbs: c,
+        fats: f,
+        fat: f,
+        fiber: 0,
+        meal: meal.toLowerCase(),
+        isCheatMeal: Boolean(isCheatMeal),
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+    }
 
     setLoggedFoods((prev) => [newLogItem, ...prev]);
 
@@ -384,49 +423,55 @@ export const NutritionProgressProvider = ({ children }) => {
     setTotalXp((prev) => prev + XP_RULES.FOOD_LOGGED);
   };
 
-  // Action: Update Food Item (Change Food, Quantity, Unit, or Cheat Meal flag)
+  // Action: Update Food Item (Supports direct nutrient values or proportional quantity scaling)
   const updateFoodItem = (logId, updates) => {
     setLoggedFoods((prev) => {
       return prev.map((item) => {
         if (item.logId !== logId) return item;
 
-        // If replacement food is specified
-        if (updates.newFood) {
-          const food = updates.newFood;
-          const qty = updates.quantity !== undefined ? updates.quantity : item.quantity;
-          const unit = updates.unit || food.defaultUnit || 'serving';
-          const nutrients = getNutritionForServing(food, qty, unit);
+        // If updates include explicit direct nutrient values (e.g. from Gemini recalculation)
+        if (updates.calories !== undefined) {
+          const cals = Math.round(Number(updates.calories));
+          const p = Number((Number(updates.protein) || 0).toFixed(1));
+          const c = Number((Number(updates.carbs) || 0).toFixed(1));
+          const f = Number((Number(updates.fats ?? updates.fat) || 0).toFixed(1));
+          const fib = updates.fiber !== undefined ? Number((Number(updates.fiber) || 0).toFixed(1)) : (item.fiber || 0);
 
           return {
             ...item,
-            foodId: food.id,
-            name: food.name,
-            category: food.category,
-            serving: food.serving,
-            quantity: qty,
-            unit,
-            calories: nutrients.calories,
-            protein: nutrients.protein,
-            carbs: nutrients.carbs,
-            fats: nutrients.fats,
+            name: updates.name || item.name,
+            quantity: updates.quantity !== undefined ? Number(updates.quantity) : item.quantity,
+            unit: updates.unit || item.unit,
+            calories: cals,
+            protein: p,
+            carbs: c,
+            fats: f,
+            fat: f,
+            fiber: fib,
+            meal: updates.meal ? updates.meal.toLowerCase() : item.meal,
             isCheatMeal: updates.isCheatMeal !== undefined ? updates.isCheatMeal : item.isCheatMeal,
+            assumptions: updates.assumptions !== undefined ? updates.assumptions : item.assumptions,
+            preparation: updates.preparation !== undefined ? updates.preparation : item.preparation,
           };
         }
 
-        // Otherwise modifying quantity / unit of existing food
-        const targetFood = indianFoods.find((f) => f.id === item.foodId) || item;
-        const newQty = updates.quantity !== undefined ? Math.max(0.01, Number(updates.quantity)) : item.quantity;
-        const newUnit = updates.unit || item.unit || 'serving';
-        const nutrients = getNutritionForServing(targetFood, newQty, newUnit);
+        // If only quantity / unit / meal changed, scale nutrients proportionally
+        const oldQty = Number(item.quantity) || 1;
+        const newQty = updates.quantity !== undefined ? Math.max(0.01, Number(updates.quantity)) : oldQty;
+        const ratio = oldQty > 0 ? newQty / oldQty : 1;
 
         return {
           ...item,
+          name: updates.name || item.name,
           quantity: newQty,
-          unit: newUnit,
-          calories: nutrients.calories,
-          protein: nutrients.protein,
-          carbs: nutrients.carbs,
-          fats: nutrients.fats,
+          unit: updates.unit || item.unit,
+          calories: Math.round(item.calories * ratio),
+          protein: Number((item.protein * ratio).toFixed(1)),
+          carbs: Number((item.carbs * ratio).toFixed(1)),
+          fats: Number((item.fats * ratio).toFixed(1)),
+          fat: Number((item.fats * ratio).toFixed(1)),
+          fiber: item.fiber ? Number((item.fiber * ratio).toFixed(1)) : 0,
+          meal: updates.meal ? updates.meal.toLowerCase() : item.meal,
           isCheatMeal: updates.isCheatMeal !== undefined ? updates.isCheatMeal : item.isCheatMeal,
         };
       });

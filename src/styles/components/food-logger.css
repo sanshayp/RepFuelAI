@@ -660,3 +660,386 @@
     align-self: flex-end;
   }
 }
+
+/* =========================================================
+   GEMINI AI NUTRITION ESTIMATOR ENHANCEMENTS
+   ========================================================= */
+
+.ai-estimator-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-2);
+}
+
+.ai-inputs-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: var(--space-3);
+}
+
+@media (max-width: 768px) {
+  .ai-inputs-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ai-inputs-grid .ai-field-food {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .ai-inputs-grid {
+    grid-template-columns: 1fr;
+  }
+  .ai-inputs-grid .ai-field-food {
+    grid-column: span 1;
+  }
+}
+
+.ai-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ai-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ai-text-input {
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  font-family: inherit;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.ai-text-input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.ai-optional-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-3);
+}
+
+@media (max-width: 640px) {
+  .ai-optional-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Quick Suggestion Chips */
+.ai-suggestions-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.ai-suggestions-title {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ai-chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ai-chip {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.ai-chip:hover {
+  background: rgba(255, 94, 30, 0.12);
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+/* Action Button */
+.ai-estimate-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  background: var(--accent-gradient);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 12px 22px;
+  font-size: 0.94rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 18px var(--accent-glow);
+  align-self: flex-start;
+  min-height: 44px;
+}
+
+.ai-estimate-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(255, 94, 30, 0.5);
+}
+
+.ai-estimate-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.ai-spinner {
+  animation: aiSpin 0.9s linear infinite;
+}
+
+@keyframes aiSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Review / Confirmation Card */
+.ai-review-card {
+  margin-top: var(--space-5);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--accent-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  animation: fadeIn 0.3s ease;
+  box-shadow: 0 0 25px rgba(255, 94, 30, 0.15);
+}
+
+.ai-review-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.ai-review-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ai-review-serving {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.ai-review-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 94, 30, 0.15);
+  border: 1px solid rgba(255, 94, 30, 0.35);
+  color: var(--accent-primary);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ai-macros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: var(--space-2);
+}
+
+.ai-macro-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+}
+
+.ai-macro-box.calories {
+  border-color: rgba(255, 94, 30, 0.3);
+  background: rgba(255, 94, 30, 0.08);
+}
+
+.ai-macro-lbl {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ai-macro-val {
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.ai-macro-box.calories .ai-macro-val {
+  color: var(--accent-primary);
+}
+
+.ai-assumptions-box {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ai-assumptions-title {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ai-assumptions-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.ai-review-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+.ai-confirm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #10B981;
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 10px 18px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 3px 12px rgba(16, 185, 129, 0.35);
+}
+
+.ai-confirm-btn:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.ai-secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  padding: 9px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.ai-secondary-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+/* Error Banner */
+.ai-error-banner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  color: #F87171;
+  font-size: 0.86rem;
+  margin-top: var(--space-3);
+  line-height: 1.4;
+}
+
+.ai-error-banner-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1;
+}
+
+.ai-error-retry-btn {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  color: #FCA5A5;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.ai-error-retry-btn:hover {
+  background: rgba(239, 68, 68, 0.35);
+  color: #FFFFFF;
+}
+
+.ai-success-toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #34D399;
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-top: var(--space-3);
+  animation: fadeIn 0.25s ease;
+}
