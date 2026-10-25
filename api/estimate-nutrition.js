@@ -12,6 +12,11 @@ const GEMINI_MODELS = [
   'gemini-2.5-flash',
 ];
 
+function getGeminiApiKey() {
+  const configuredKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+  return typeof configuredKey === 'string' && configuredKey.trim() ? configuredKey.trim() : null;
+}
+
 /**
  * Builds the standardized Gemini prompt for food nutrition estimation.
  */
@@ -254,12 +259,12 @@ export default async function handler(req, res) {
       return;
     }
 
-    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+    const apiKey = getGeminiApiKey();
 
     if (!apiKey) {
       res.status(503).json({
         success: false,
-        error: 'GEMINI_API_KEY is not configured on the server. Please set GEMINI_API_KEY in your environment variables.',
+        error: 'GEMINI_API_KEY is not configured on the server. Add it to the Vercel project environment variables and redeploy.',
       });
       return;
     }

@@ -139,6 +139,23 @@ npm run dev
 
 The application will be available at `http://localhost:3000`.
 
+### Vercel deployment
+
+The nutrition endpoint runs as a Vercel Serverless Function at
+`/api/estimate-nutrition`. Configure the Gemini key in Vercel before deploying:
+
+1. Open the project in the Vercel dashboard and go to **Settings → Environment Variables**.
+2. Add a variable named `GEMINI_API_KEY` with the key from
+   [Google AI Studio](https://aistudio.google.com/).
+3. Enable it for the environments you use (**Production**, and **Preview** if
+   applicable).
+4. Save the variable and create a new deployment. Vercel environment variable
+   changes do not update already-created deployments.
+
+Do not add the Gemini key as a browser-exposed `VITE_*` variable. The API
+function reads `GEMINI_API_KEY` on the server so the key is not included in the
+frontend bundle.
+
 ### Production Build
 
 Create an optimized, minified production bundle in the `dist` directory:

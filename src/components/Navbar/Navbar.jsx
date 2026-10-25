@@ -201,6 +201,36 @@ export const Navbar = ({
               );
             })}
           </ul>
+          <div className="mobile-drawer-footer">
+            <Link
+              to="/profile"
+              className={`mobile-nav-link ${pathname === '/profile' ? 'active' : ''}`}
+              onClick={closeMobileMenu}
+            >
+              <span><UserCircle size={19} aria-hidden="true" /> Profile</span>
+              <ChevronRight size={18} opacity={0.6} />
+            </Link>
+            {user ? (
+              <button
+                type="button"
+                className="mobile-nav-link mobile-sign-out"
+                onClick={handleSignOut}
+                aria-label={`Sign out${user.displayName ? `, ${user.displayName}` : ''}`}
+              >
+                <span><LogOut size={19} aria-hidden="true" /> Sign out</span>
+                <ChevronRight size={18} opacity={0.6} />
+              </button>
+            ) : (
+              <Link
+                to="/sign-in"
+                className={`mobile-nav-link ${pathname === '/sign-in' ? 'active' : ''}`}
+                onClick={closeMobileMenu}
+              >
+                <span><LogIn size={19} aria-hidden="true" /> Sign in</span>
+                <ChevronRight size={18} opacity={0.6} />
+              </Link>
+            )}
+          </div>
         </div>
       )}
     </header>
