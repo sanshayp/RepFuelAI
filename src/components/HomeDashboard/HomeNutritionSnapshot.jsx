@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { Flame, Footprints, Award, ArrowUpRight, Edit3, Plus, Minus, Check, Sparkles } from 'lucide-react';
 import { useNutritionProgress } from '../../context/NutritionProgressContext';
 import { CalorieRing } from '../Common/CalorieRing';
-import { ProfileRequired } from '../Common/ProfileRequired';
-import { hasSavedProfile } from '../../utils/profileUtils';
 import './HomeNutritionSnapshot.css';
 
 export const HomeNutritionSnapshot = () => {
@@ -20,11 +18,8 @@ export const HomeNutritionSnapshot = () => {
     dailyScore,
     loggedFoods,
     todayWorkoutDone,
+    isDemoMode,
   } = useNutritionProgress();
-
-  if (!hasSavedProfile()) {
-    return <ProfileRequired feature="Nutrition and Progress" />;
-  }
 
   const [isEditingSteps, setIsEditingSteps] = useState(false);
   const [tempSteps, setTempSteps] = useState(stepCount);
@@ -57,7 +52,9 @@ export const HomeNutritionSnapshot = () => {
             </div>
             <h2 className="home-snapshot-title">Today&apos;s Nutrition &amp; Activity</h2>
             <p className="home-snapshot-desc">
-              Synchronized real-time daily metrics from your Indian food logger, step tracker, and athletic progress engine.
+              {isDemoMode
+                ? 'Explore a pre-filled athlete dashboard with sample nutrition, steps, and progress data.'
+                : 'Synchronized real-time daily metrics from your Indian food logger, step tracker, and athletic progress engine.'}
             </p>
           </div>
 
@@ -70,6 +67,12 @@ export const HomeNutritionSnapshot = () => {
               <span>View Progress Calendar</span>
               <ArrowUpRight size={16} />
             </Link>
+            {isDemoMode && (
+              <Link to="/sign-in" className="snapshot-link-btn">
+                <span>Sign in to save progress</span>
+                <ArrowUpRight size={16} />
+              </Link>
+            )}
           </div>
         </div>
 

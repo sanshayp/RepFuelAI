@@ -3,26 +3,8 @@ import { Utensils } from 'lucide-react';
 import { PageHeader } from '../../components/Common/PageHeader';
 import { CalorieTracker } from '../../components/CalorieTracker/CalorieTracker';
 import { FoodLogger } from '../../components/FoodLogger/FoodLogger';
-import { ProfileRequired } from '../../components/Common/ProfileRequired';
-import { hasSavedProfile } from '../../utils/profileUtils';
 
 export const NutritionPage = () => {
-  if (!hasSavedProfile()) {
-    return (
-      <div className="nutrition-page-container">
-        <PageHeader
-          badge="NUTRITION & CALORIE TRACKER"
-          badgeIcon={Utensils}
-          title="Fuel Your"
-          titleAccent="Performance"
-          subtitle="Set up your profile first so nutrition targets are calculated from your own details."
-          currentPage="Nutrition"
-        />
-        <ProfileRequired feature="Nutrition" />
-      </div>
-    );
-  }
-
   return (
     <div className="nutrition-page-container">
       <PageHeader
@@ -30,7 +12,7 @@ export const NutritionPage = () => {
         badgeIcon={Utensils}
         title="Fuel Your"
         titleAccent="Performance"
-        subtitle="Log Indian foods, monitor meal-by-meal targets, and optimize your daily macronutrients with precision."
+        subtitle="Explore a pre-filled athlete dashboard, then log Indian foods and optimize your daily macronutrients after signing in."
         currentPage="Nutrition"
         statsPill="Experimental Live Tracker"
       />

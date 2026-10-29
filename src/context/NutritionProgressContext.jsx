@@ -4,6 +4,7 @@ import { calculateMealTargets, getCompensationOptions } from '../utils/nutrition
 import { calculateLevelInfo, calculateDailyScore, XP_RULES } from '../utils/progressUtils';
 import { defaultWeeklyHistory, defaultCalendarDays, initialAchievements } from '../data/progressSampleData';
 import { calculateGoalCalories, getSavedProfile } from '../utils/profileUtils';
+import { auth } from '../firebase';
 
 const NutritionProgressContext = createContext(null);
 
@@ -21,9 +22,73 @@ const STORAGE_KEYS = {
   ACHIEVEMENTS: 'repfuel_achievements_v2',
 };
 
+const demoLoggedFoods = [
+  {
+    logId: 101,
+    name: 'Masala Oats with Eggs',
+    category: 'Breakfast',
+    quantity: 1,
+    unit: 'bowl',
+    calories: 420,
+    protein: 24,
+    carbs: 48,
+    fats: 14,
+    fiber: 7,
+    meal: 'breakfast',
+    isCheatMeal: false,
+    timestamp: '08:15 AM',
+  },
+  {
+    logId: 102,
+    name: 'Paneer Tikka Rice Bowl',
+    category: 'Lunch',
+    quantity: 1,
+    unit: 'serving',
+    calories: 680,
+    protein: 42,
+    carbs: 76,
+    fats: 22,
+    fiber: 8,
+    meal: 'lunch',
+    isCheatMeal: false,
+    timestamp: '01:05 PM',
+  },
+  {
+    logId: 103,
+    name: 'Greek Yogurt and Banana',
+    category: 'Snack',
+    quantity: 1,
+    unit: 'serving',
+    calories: 250,
+    protein: 18,
+    carbs: 34,
+    fats: 4,
+    fiber: 3,
+    meal: 'snacks',
+    isCheatMeal: false,
+    timestamp: '04:30 PM',
+  },
+  {
+    logId: 104,
+    name: 'Dal, Roti and Chicken Curry',
+    category: 'Dinner',
+    quantity: 1,
+    unit: 'serving',
+    calories: 500,
+    protein: 34,
+    carbs: 58,
+    fats: 16,
+    fiber: 9,
+    meal: 'dinner',
+    isCheatMeal: false,
+    timestamp: '08:10 PM',
+  },
+];
+
 export const NutritionProgressProvider = ({ children }) => {
   const savedProfile = getSavedProfile();
-  const hasProfile = Boolean(savedProfile.bmr);
+  const hasProfile = Boolean(savedProfile.bmr && auth?.currentUser);
+  const [isDemoMode, setIsDemoMode] = useState(!hasProfile);
 
   // 1. Daily Calorie Target
   const [dailyCalorieTarget, setDailyCalorieTargetState] = useState(() => {
@@ -36,7 +101,7 @@ export const NutritionProgressProvider = ({ children }) => {
 
   // 2. Step Count Tracking
   const [stepCount, setStepCountState] = useState(() => {
-    return hasProfile ? safeGetStorage(STORAGE_KEYS.STEP_COUNT, 0) : 0;
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.STEP_COUNT, 0) : 8450;
   });
 
   const [stepGoal, setStepGoalState] = useState(() => {
@@ -45,7 +110,7 @@ export const NutritionProgressProvider = ({ children }) => {
 
   // 3. Logged Foods list
   const [loggedFoods, setLoggedFoods] = useState(() => {
-    if (!hasProfile) return [];
+    if (!hasProfile) return demoLoggedFoods;
     const savedFoods = safeGetStorage(STORAGE_KEYS.LOGGED_FOODS, []);
     const seededLogIds = new Set([101, 102, 103, 104, 105]);
     return savedFoods.filter((item) => !seededLogIds.has(item.logId));
@@ -59,76 +124,87 @@ export const NutritionProgressProvider = ({ children }) => {
 
   // 5. Today's Workout Completion status
   const [todayWorkoutDone, setTodayWorkoutDoneState] = useState(() => {
-    return hasProfile ? safeGetStorage(STORAGE_KEYS.WORKOUT_DONE, false) : false;
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.WORKOUT_DONE, false) : true;
   });
 
   // 6. Calendar Days (30 Days of September 2026)
   const [calendarDays, setCalendarDays] = useState(() => {
-    return hasProfile ? safeGetStorage(STORAGE_KEYS.CALENDAR_DAYS, []) : [];
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.CALENDAR_DAYS, []) : defaultCalendarDays;
   });
 
   // 7. Weekly History data
   const [weeklyHistory, setWeeklyHistory] = useState(() => {
-    return hasProfile ? safeGetStorage(STORAGE_KEYS.WEEKLY_HISTORY, []) : [];
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.WEEKLY_HISTORY, []) : defaultWeeklyHistory;
   });
 
   // 8. Gamification (XP, Streak, Achievements)
   const [totalXp, setTotalXp] = useState(() => {
-    return hasProfile ? safeGetStorage(STORAGE_KEYS.TOTAL_XP, 0) : 0;
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.TOTAL_XP, 0) : 850;
   });
 
   const [streak, setStreak] = useState(() => {
-    return hasProfile ? safeGetStorage(STORAGE_KEYS.STREAK, 0) : 0;
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.STREAK, 0) : 6;
   });
 
   const [achievements, setAchievements] = useState(() => {
-    return hasProfile ? safeGetStorage(STORAGE_KEYS.ACHIEVEMENTS, []) : [];
+    return hasProfile ? safeGetStorage(STORAGE_KEYS.ACHIEVEMENTS, []) : initialAchievements;
   });
 
   // Persist State to LocalStorage
   useEffect(() => {
+    if (isDemoMode) return;
     safeSetStorage(STORAGE_KEYS.CALORIE_TARGET, dailyCalorieTarget);
-  }, [dailyCalorieTarget]);
+  }, [dailyCalorieTarget, isDemoMode]);
 
   useEffect(() => {
+    if (isDemoMode) return;
     safeSetStorage(STORAGE_KEYS.STEP_COUNT, stepCount);
-  }, [stepCount]);
+  }, [stepCount, isDemoMode]);
 
   useEffect(() => {
+    if (isDemoMode) return;
     safeSetStorage(STORAGE_KEYS.STEP_GOAL, stepGoal);
-  }, [stepGoal]);
+  }, [stepGoal, isDemoMode]);
 
   useEffect(() => {
+    if (isDemoMode) return;
     safeSetStorage(STORAGE_KEYS.LOGGED_FOODS, loggedFoods);
-  }, [loggedFoods]);
+  }, [loggedFoods, isDemoMode]);
 
   useEffect(() => {
+    if (isDemoMode) return;
     safeSetStorage(STORAGE_KEYS.MEAL_COMPENSATIONS, mealCompensations);
-  }, [mealCompensations]);
+  }, [mealCompensations, isDemoMode]);
 
   useEffect(() => {
+    if (isDemoMode) return;
     safeSetStorage(STORAGE_KEYS.WORKOUT_DONE, todayWorkoutDone);
-  }, [todayWorkoutDone]);
+  }, [todayWorkoutDone, isDemoMode]);
 
   useEffect(() => {
+    if (isDemoMode) return;
     safeSetStorage(STORAGE_KEYS.CALENDAR_DAYS, calendarDays);
-  }, [calendarDays]);
+  }, [calendarDays, isDemoMode]);
 
   useEffect(() => {
+    if (isDemoMode) return;
     safeSetStorage(STORAGE_KEYS.WEEKLY_HISTORY, weeklyHistory);
-  }, [weeklyHistory]);
+  }, [weeklyHistory, isDemoMode]);
 
   useEffect(() => {
+    if (isDemoMode) return;
     safeSetStorage(STORAGE_KEYS.TOTAL_XP, totalXp);
-  }, [totalXp]);
+  }, [totalXp, isDemoMode]);
 
   useEffect(() => {
+    if (isDemoMode) return;
     safeSetStorage(STORAGE_KEYS.STREAK, streak);
-  }, [streak]);
+  }, [streak, isDemoMode]);
 
   useEffect(() => {
+    if (isDemoMode) return;
     safeSetStorage(STORAGE_KEYS.ACHIEVEMENTS, achievements);
-  }, [achievements]);
+  }, [achievements, isDemoMode]);
 
   // Base Meal Targets derived from Daily Target
   const baseMealTargets = useMemo(() => {
@@ -569,7 +645,13 @@ export const NutritionProgressProvider = ({ children }) => {
     setAchievements([]);
   };
 
+  const startUserData = () => {
+    setIsDemoMode(false);
+    clearUserData();
+  };
+
   const contextValue = {
+    isDemoMode,
     dailyCalorieTarget,
     setDailyCalorieTarget,
     stepCount,
@@ -605,6 +687,7 @@ export const NutritionProgressProvider = ({ children }) => {
     levelInfo,
     resetToSampleData,
     clearUserData,
+    startUserData,
   };
 
   return (

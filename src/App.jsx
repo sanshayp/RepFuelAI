@@ -20,7 +20,6 @@ import { NutritionPage } from './pages/Nutrition/NutritionPage';
 import { ProgressPage } from './pages/Progress/ProgressPage';
 import { ProfilePage } from './pages/Profile/ProfilePage';
 import { SignInPage } from './pages/Profile/SignInPage';
-import { hasSavedProfile } from './utils/profileUtils';
 import './App.css';
 
 /**
@@ -91,11 +90,7 @@ function DefaultRoute() {
     return <div className="auth-loading" role="status">Checking your sign-in status…</div>;
   }
 
-  if (!authState.user) {
-    return <SignInPage authError={authState.error} />;
-  }
-
-  return hasSavedProfile() ? <HomeLandingPage /> : <Navigate to="/profile" replace />;
+  return <HomeLandingPage />;
 }
 
 export function App() {

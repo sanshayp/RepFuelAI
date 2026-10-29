@@ -59,7 +59,7 @@ const ProfileSelect = ({ name, value, onChange, options }) => {
 };
 
 export const ProfilePage = () => {
-  const { setDailyCalorieTarget, clearUserData } = useNutritionProgress();
+  const { setDailyCalorieTarget, clearUserData, startUserData } = useNutritionProgress();
   const [profile, setProfile] = useState(() => ({ ...emptyProfile, ...safeGetStorage(PROFILE_STORAGE_KEY, emptyProfile) }));
   const [error, setError] = useState('');
   const [isEditing, setIsEditing] = useState(() => !safeGetStorage(PROFILE_STORAGE_KEY, emptyProfile).bmr);
@@ -98,6 +98,7 @@ export const ProfilePage = () => {
 
     setProfile(updatedProfile);
     safeSetStorage(PROFILE_STORAGE_KEY, updatedProfile);
+    startUserData();
     setDailyCalorieTarget(updatedProfile.calorieTarget);
     setError('');
     setIsEditing(false);
